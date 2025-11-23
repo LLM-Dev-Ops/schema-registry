@@ -676,7 +676,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Run migrations
     tracing::info!("Running database migrations...");
-    sqlx::migrate!("../../migrations")
+    sqlx::migrate!("./migrations")
         .run(&db)
         .await?;
     tracing::info!("Migrations completed");

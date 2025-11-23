@@ -130,7 +130,7 @@ jobs:
           sleep 30
 
       # High-level crates (CLI and Server)
-      - name: Publish schema-registry-cli
+      - name: Publish llm-schema-cli
         run: |
           cd crates/schema-registry-cli
           cargo publish --allow-dirty || echo "Already published or failed"

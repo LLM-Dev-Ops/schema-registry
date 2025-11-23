@@ -7,9 +7,9 @@ description = "LLM module integrations for Schema Registry (Prompt, RAG, Serving
 
 [dependencies]
 # Core dependencies
-schema-registry-core = { path = "../schema-registry-core" }
-schema-registry-api = { path = "../schema-registry-api" }
-schema-registry-validation = { path = "../schema-registry-validation" }
+schema-registry-core = { version = "0.1.0", path = "../schema-registry-core" }
+schema-registry-api = { version = "0.1.0", path = "../schema-registry-api" }
+schema-registry-validation = { version = "0.1.0", path = "../schema-registry-validation" }
 
 # Async runtime
 tokio = { version = "1.43", features = ["full"] }
