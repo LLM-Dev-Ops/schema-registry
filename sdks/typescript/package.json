@@ -1,5 +1,5 @@
 {
-  "name": "@llm-schema-registry/sdk",
+  "name": "@llm-dev-ops/llm-schema-registry-sdk",
   "version": "0.1.0",
   "description": "TypeScript SDK for LLM Schema Registry",
   "main": "dist/index.js",

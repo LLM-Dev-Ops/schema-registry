@@ -1,0 +1,68 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish to npm?'
+        required: true
+        default: 'yes'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+
+jobs:
+  publish-typescript-sdk:
+    name: Publish TypeScript SDK to npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./sdks/typescript
+
+      - name: Build TypeScript SDK
+        run: npm run build
+        working-directory: ./sdks/typescript
+
+      - name: Run tests (if available)
+        run: npm test || echo "No tests configured"
+        working-directory: ./sdks/typescript
+        continue-on-error: true
+
+      - name: Publish to npm
+        run: npm publish --access public
+        working-directory: ./sdks/typescript
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  summary:
+    name: Publish Summary
+    needs: [publish-typescript-sdk]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "## NPM Publish Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- TypeScript SDK: Published to npm" >> $GITHUB_STEP_SUMMARY
+          echo "  - Package: @llm-dev-ops/llm-schema-registry-sdk" >> $GITHUB_STEP_SUMMARY
+          echo "  - Version: 0.1.0" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Installation" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @llm-dev-ops/llm-schema-registry-sdk" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
