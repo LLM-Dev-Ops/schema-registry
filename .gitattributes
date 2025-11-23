@@ -1,0 +1,32 @@
+# GitAttributes for LLM Schema Registry
+# Controls how GitHub displays repository language statistics
+
+# Ignore vendored dependencies and generated files from language statistics
+node_modules/** linguist-vendored
+**/node_modules/** linguist-vendored
+target/** linguist-vendored
+**/target/** linguist-vendored
+dist/** linguist-generated
+**/dist/** linguist-generated
+
+# Ignore documentation from language statistics
+docs/** linguist-documentation
+*.md linguist-documentation
+plans/** linguist-documentation
+
+# Ignore test fixtures and generated proto files
+tests/fixtures/** linguist-vendored
+**/generated/** linguist-generated
+proto/** linguist-vendored
+
+# Mark primary languages explicitly
+*.rs linguist-language=Rust
+*.ts linguist-language=TypeScript
+*.js linguist-language=JavaScript
+
+# Exclude Makefiles from npm packages (if any slip through)
+**/build/*.mk linguist-vendored
+**/deps/**/*.mk linguist-vendored
+
+# Treat protocol buffers as vendored
+*.proto linguist-vendored
