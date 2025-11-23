@@ -4,8 +4,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build_client(true)
         .out_dir("src/generated")
         .compile(
-            &["../../proto/schema_registry.proto"],
-            &["../../proto"],
+            &["proto/schema_registry.proto"],
+            &["proto"],
         )?;
     Ok(())
 }

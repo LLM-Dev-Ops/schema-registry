@@ -1,0 +1,363 @@
+syntax = "proto3";
+
+package schema_registry.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// ============================================================================
+// Schema Registry Service
+// ============================================================================
+
+service SchemaRegistry {
+  // Schema Management
+  rpc RegisterSchema(RegisterSchemaRequest) returns (RegisterSchemaResponse);
+  rpc GetSchema(GetSchemaRequest) returns (GetSchemaResponse);
+  rpc GetSchemaByVersion(GetSchemaByVersionRequest) returns (GetSchemaResponse);
+  rpc ListSchemas(ListSchemasRequest) returns (stream SchemaInfo);
+  rpc UpdateSchemaMetadata(UpdateSchemaMetadataRequest) returns (UpdateSchemaMetadataResponse);
+  rpc DeleteSchema(DeleteSchemaRequest) returns (google.protobuf.Empty);
+
+  // Version Management
+  rpc ListVersions(ListVersionsRequest) returns (ListVersionsResponse);
+  rpc GetLatestVersion(GetLatestVersionRequest) returns (GetSchemaResponse);
+
+  // Validation
+  rpc ValidateData(ValidateDataRequest) returns (ValidationReport);
+  rpc ValidateSchema(ValidateSchemaRequest) returns (SchemaValidationReport);
+  rpc BatchValidate(stream ValidateDataRequest) returns (stream ValidationReport);
+
+  // Compatibility
+  rpc CheckCompatibility(CompatibilityCheckRequest) returns (CompatibilityReport);
+  rpc BatchCheckCompatibility(stream CompatibilityCheckRequest) returns (stream CompatibilityReport);
+
+  // Search & Discovery
+  rpc SearchSchemas(SearchSchemasRequest) returns (SearchSchemasResponse);
+  rpc GetDependencies(GetDependenciesRequest) returns (DependenciesResponse);
+  rpc GetDependents(GetDependentsRequest) returns (DependenciesResponse);
+
+  // Subjects
+  rpc ListSubjects(ListSubjectsRequest) returns (ListSubjectsResponse);
+  rpc GetSubjectVersions(GetSubjectVersionsRequest) returns (GetSubjectVersionsResponse);
+
+  // Real-time Streaming
+  rpc StreamSchemaChanges(StreamRequest) returns (stream SchemaChangeEvent);
+
+  // Health & Metrics
+  rpc HealthCheck(google.protobuf.Empty) returns (HealthCheckResponse);
+}
+
+// ============================================================================
+// Common Types
+// ============================================================================
+
+enum SchemaType {
+  SCHEMA_TYPE_UNSPECIFIED = 0;
+  SCHEMA_TYPE_JSON = 1;
+  SCHEMA_TYPE_AVRO = 2;
+  SCHEMA_TYPE_PROTOBUF = 3;
+  SCHEMA_TYPE_THRIFT = 4;
+}
+
+enum CompatibilityLevel {
+  COMPATIBILITY_LEVEL_UNSPECIFIED = 0;
+  COMPATIBILITY_LEVEL_BACKWARD = 1;
+  COMPATIBILITY_LEVEL_FORWARD = 2;
+  COMPATIBILITY_LEVEL_FULL = 3;
+  COMPATIBILITY_LEVEL_BACKWARD_TRANSITIVE = 4;
+  COMPATIBILITY_LEVEL_FORWARD_TRANSITIVE = 5;
+  COMPATIBILITY_LEVEL_FULL_TRANSITIVE = 6;
+  COMPATIBILITY_LEVEL_NONE = 7;
+}
+
+enum SchemaState {
+  SCHEMA_STATE_UNSPECIFIED = 0;
+  SCHEMA_STATE_DRAFT = 1;
+  SCHEMA_STATE_ACTIVE = 2;
+  SCHEMA_STATE_DEPRECATED = 3;
+  SCHEMA_STATE_ARCHIVED = 4;
+}
+
+message SchemaInfo {
+  string id = 1;
+  string subject = 2;
+  string version = 3;
+  SchemaType schema_type = 4;
+  bytes schema_content = 5;
+  map<string, string> metadata = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  CompatibilityLevel compatibility_level = 9;
+  SchemaState state = 10;
+  string checksum = 11;
+  optional string description = 12;
+  repeated string tags = 13;
+  string created_by = 14;
+}
+
+// ============================================================================
+// Request/Response Messages
+// ============================================================================
+
+// Schema Registration
+message RegisterSchemaRequest {
+  string subject = 1;
+  bytes schema_content = 2;
+  SchemaType schema_type = 3;
+  map<string, string> metadata = 4;
+  optional CompatibilityLevel compatibility_level = 5;
+  optional string description = 6;
+  repeated string tags = 7;
+  bool auto_version = 8; // Auto-increment version
+}
+
+message RegisterSchemaResponse {
+  string schema_id = 1;
+  string version = 2;
+  string subject = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string checksum = 5;
+}
+
+// Schema Retrieval
+message GetSchemaRequest {
+  string schema_id = 1;
+}
+
+message GetSchemaByVersionRequest {
+  string subject = 1;
+  string version = 2;
+}
+
+message GetSchemaResponse {
+  SchemaInfo schema = 1;
+}
+
+message ListSchemasRequest {
+  optional string subject_prefix = 1;
+  optional SchemaType schema_type = 2;
+  optional int32 limit = 3;
+  optional int32 offset = 4;
+  optional SchemaState state = 5;
+}
+
+// Schema Metadata Updates
+message UpdateSchemaMetadataRequest {
+  string schema_id = 1;
+  optional string description = 2;
+  repeated string tags = 3;
+  map<string, string> metadata = 4;
+  optional SchemaState state = 5;
+}
+
+message UpdateSchemaMetadataResponse {
+  SchemaInfo schema = 1;
+}
+
+// Schema Deletion
+message DeleteSchemaRequest {
+  string schema_id = 1;
+  bool soft_delete = 2; // If true, marks as deleted; if false, permanently removes
+}
+
+// Version Management
+message ListVersionsRequest {
+  string subject = 1;
+  optional int32 limit = 2;
+  optional int32 offset = 3;
+}
+
+message ListVersionsResponse {
+  repeated string versions = 1;
+  int32 total_count = 2;
+}
+
+message GetLatestVersionRequest {
+  string subject = 1;
+}
+
+// Validation
+message ValidateDataRequest {
+  string schema_id = 1;
+  bytes data = 2;
+  bool strict = 3; // Fail on unknown fields
+}
+
+message ValidationReport {
+  bool valid = 1;
+  repeated ValidationError errors = 2;
+  repeated ValidationWarning warnings = 3;
+  double validation_time_ms = 4;
+  string schema_id = 5;
+}
+
+message ValidationError {
+  string path = 1;
+  string message = 2;
+  string error_type = 3;
+}
+
+message ValidationWarning {
+  string path = 1;
+  string message = 2;
+  string warning_type = 3;
+}
+
+message ValidateSchemaRequest {
+  bytes schema_content = 1;
+  SchemaType schema_type = 2;
+}
+
+message SchemaValidationReport {
+  bool valid = 1;
+  repeated string errors = 2;
+  repeated string warnings = 3;
+}
+
+// Compatibility Checking
+message CompatibilityCheckRequest {
+  string subject = 1;
+  bytes new_schema = 2;
+  CompatibilityLevel level = 3;
+  optional string compare_version = 4; // If not specified, compares against latest
+}
+
+message CompatibilityReport {
+  bool compatible = 1;
+  CompatibilityLevel level = 2;
+  repeated CompatibilityViolation violations = 3;
+  repeated string compared_versions = 4;
+  string message = 5;
+}
+
+message CompatibilityViolation {
+  string rule = 1;
+  string path = 2;
+  string message = 3;
+  Severity severity = 4;
+}
+
+enum Severity {
+  SEVERITY_UNSPECIFIED = 0;
+  SEVERITY_ERROR = 1;
+  SEVERITY_WARNING = 2;
+  SEVERITY_INFO = 3;
+}
+
+// Search & Discovery
+message SearchSchemasRequest {
+  optional string query = 1;
+  optional string subject_pattern = 2;
+  optional SchemaType schema_type = 3;
+  repeated string tags = 4;
+  map<string, string> metadata_filters = 5;
+  optional int32 limit = 6;
+  optional int32 offset = 7;
+}
+
+message SearchSchemasResponse {
+  repeated SchemaInfo schemas = 1;
+  int32 total_count = 2;
+}
+
+message GetDependenciesRequest {
+  string schema_id = 1;
+  bool transitive = 2; // Include transitive dependencies
+}
+
+message GetDependentsRequest {
+  string schema_id = 1;
+  bool transitive = 2; // Include transitive dependents
+}
+
+message DependenciesResponse {
+  repeated DependencyInfo dependencies = 1;
+}
+
+message DependencyInfo {
+  string schema_id = 1;
+  string subject = 2;
+  string version = 3;
+  string dependency_type = 4; // "reference", "import", "extends"
+  int32 depth = 5; // Depth in dependency graph
+}
+
+// Subjects
+message ListSubjectsRequest {
+  optional string prefix = 1;
+  optional int32 limit = 2;
+  optional int32 offset = 3;
+}
+
+message ListSubjectsResponse {
+  repeated string subjects = 1;
+  int32 total_count = 2;
+}
+
+message GetSubjectVersionsRequest {
+  string subject = 1;
+}
+
+message GetSubjectVersionsResponse {
+  string subject = 1;
+  repeated VersionInfo versions = 2;
+}
+
+message VersionInfo {
+  string version = 1;
+  string schema_id = 2;
+  google.protobuf.Timestamp created_at = 3;
+  SchemaState state = 4;
+}
+
+// Real-time Streaming
+message StreamRequest {
+  repeated string subjects = 1; // Empty = all subjects
+  repeated EventType event_types = 2; // Empty = all events
+}
+
+enum EventType {
+  EVENT_TYPE_UNSPECIFIED = 0;
+  EVENT_TYPE_SCHEMA_REGISTERED = 1;
+  EVENT_TYPE_SCHEMA_UPDATED = 2;
+  EVENT_TYPE_SCHEMA_DELETED = 3;
+  EVENT_TYPE_SCHEMA_DEPRECATED = 4;
+}
+
+message SchemaChangeEvent {
+  EventType event_type = 1;
+  string schema_id = 2;
+  string subject = 3;
+  string version = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  map<string, string> metadata = 6;
+  optional string changed_by = 7;
+}
+
+// Health Check
+message HealthCheckResponse {
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_HEALTHY = 1;
+    STATUS_DEGRADED = 2;
+    STATUS_UNHEALTHY = 3;
+  }
+
+  Status status = 1;
+  map<string, ComponentHealth> components = 2;
+  string version = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+message ComponentHealth {
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_UP = 1;
+    STATUS_DOWN = 2;
+    STATUS_DEGRADED = 3;
+  }
+
+  Status status = 1;
+  optional string message = 2;
+  map<string, string> details = 3;
+}
