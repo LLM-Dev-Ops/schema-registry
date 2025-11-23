@@ -3,7 +3,13 @@ name = "llm-integrations"
 version = "0.1.0"
 edition = "2021"
 authors = ["Schema Registry Team"]
-description = "LLM module integrations for Schema Registry (Prompt, RAG, Serving, Training, Eval)"
+license = "Apache-2.0"
+repository = "https://github.com/globalbusinessadvisors/llm-schema-registry"
+homepage = "https://github.com/globalbusinessadvisors/llm-schema-registry"
+description = "LLM integrations for schema generation (OpenAI, Anthropic, Gemini, Cohere)"
+keywords = ["llm", "ai", "openai", "anthropic", "schema-generation"]
+categories = ["api-bindings", "development-tools"]
+readme = "README.md"
 
 [dependencies]
 # Core dependencies
