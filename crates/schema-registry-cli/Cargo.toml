@@ -26,6 +26,7 @@ schema-registry-analytics = { workspace = true }
 schema-registry-lineage = { workspace = true }
 schema-registry-migration = { workspace = true }
 schema-registry-security = { workspace = true }
+schema-registry-benchmarks = { workspace = true }
 
 # Async runtime
 tokio = { workspace = true }

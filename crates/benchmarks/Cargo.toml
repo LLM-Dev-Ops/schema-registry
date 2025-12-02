@@ -1,0 +1,44 @@
+[package]
+name = "schema-registry-benchmarks"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Canonical benchmark infrastructure for Schema Registry operations"
+keywords = ["benchmarks", "schema", "registry", "performance", "testing"]
+categories = ["development-tools::testing"]
+
+[dependencies]
+# Internal crates
+schema-registry-core = { workspace = true }
+schema-registry-storage = { workspace = true }
+schema-registry-validation = { workspace = true }
+schema-registry-compatibility = { workspace = true }
+
+# Async runtime
+tokio = { workspace = true }
+async-trait = { workspace = true }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Time
+chrono = { workspace = true }
+
+# Utilities
+uuid = { workspace = true }
+
+# Error handling
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+
+# Benchmarking
+criterion = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }
+tempfile = "3.8"

@@ -1,0 +1,5 @@
+# Ignore all JSON files in raw directory except .gitkeep
+raw/*.json
+
+# Keep the summary.md template in git
+!summary.md

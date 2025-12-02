@@ -9,7 +9,7 @@ mod error;
 mod output;
 
 use clap::{Parser, Subcommand};
-use commands::{admin, analytics, lineage, migration, schema};
+use commands::{admin, analytics, benchmark, lineage, migration, schema};
 use error::Result;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
@@ -66,6 +66,10 @@ enum Commands {
     #[command(subcommand)]
     Admin(admin::AdminCommand),
 
+    /// Benchmark commands
+    #[command(subcommand)]
+    Benchmark(benchmark::BenchmarkCommand),
+
     /// Initialize configuration
     Init {
         /// Registry URL
@@ -115,6 +119,7 @@ async fn run(cli: Cli) -> Result<()> {
         Commands::Analytics(cmd) => analytics::execute(cmd, &config, cli.output).await,
         Commands::Migration(cmd) => migration::execute(cmd, &config, cli.output).await,
         Commands::Admin(cmd) => admin::execute(cmd, &config, cli.output).await,
+        Commands::Benchmark(cmd) => benchmark::execute(cmd, &config, cli.output).await,
         Commands::Init { url, force } => {
             config::init_config(&url, force)?;
             println!("✓ Configuration initialized successfully");

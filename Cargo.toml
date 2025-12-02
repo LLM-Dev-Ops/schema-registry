@@ -13,6 +13,7 @@ members = [
     "crates/schema-registry-cli",
     "crates/schema-registry-server",
     "crates/llm-integrations",
+    "crates/benchmarks",
     "tests",
 ]
 resolver = "2"
@@ -39,6 +40,7 @@ schema-registry-observability = { version = "0.1.0", path = "crates/schema-regis
 schema-registry-analytics = { version = "0.1.0", path = "crates/schema-registry-analytics" }
 schema-registry-lineage = { version = "0.1.0", path = "crates/schema-registry-lineage" }
 schema-registry-migration = { version = "0.1.0", path = "crates/schema-registry-migration" }
+schema-registry-benchmarks = { version = "0.1.0", path = "crates/benchmarks" }
 
 # Async runtime
 tokio = { version = "1.35", features = ["full"] }
