@@ -13,6 +13,9 @@ categories = ["data-structures", "development-tools", "api-bindings"]
 readme = "README.md"
 
 [dependencies]
+# LLM Dev Ops dependencies
+llm-config-core = { workspace = true }
+
 # Async
 tokio = { workspace = true }
 async-trait = { workspace = true }

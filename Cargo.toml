@@ -42,6 +42,9 @@ schema-registry-lineage = { version = "0.1.0", path = "crates/schema-registry-li
 schema-registry-migration = { version = "0.1.0", path = "crates/schema-registry-migration" }
 schema-registry-benchmarks = { version = "0.1.0", path = "crates/benchmarks" }
 
+# LLM Dev Ops dependencies
+llm-config-core = { git = "https://github.com/LLM-Dev-Ops/config-manager", tag = "v0.5.1" }
+
 # Async runtime
 tokio = { version = "1.35", features = ["full"] }
 tokio-util = "0.7"

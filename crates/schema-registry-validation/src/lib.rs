@@ -7,6 +7,9 @@ pub mod format_detection;
 pub mod types;
 pub mod validators;
 
+// Config Manager integration for policy-based validation (Phase 2B)
+pub mod config_integration;
+
 pub struct ValidationEngine {}
 
 impl ValidationEngine {
