@@ -1,7 +1,7 @@
 //! Main compatibility checker implementation
 
 use crate::cache::CompatibilityCache;
-use crate::formats::{AvroCompatibilityChecker, JsonSchemaCompatibilityChecker, ProtobufCompatibilityChecker};
+use crate::formats::{AvroCompatibilityChecker, FormatCompatibilityChecker, JsonSchemaCompatibilityChecker, ProtobufCompatibilityChecker};
 use crate::types::{CompatibilityMode, CompatibilityResult, Schema, SchemaFormat};
 use crate::violation::{CompatibilityViolation, ViolationSeverity, ViolationType};
 use std::sync::Arc;
@@ -111,7 +111,7 @@ impl CompatibilityChecker {
         // Check cache
         if let Some(ref cache) = self.cache {
             if let Some(cached_result) =
-                cache.get(&new_schema.content_hash, &old_schema.content_hash, mode)
+                cache.get(&new_schema.content_hash, &old_schema.content_hash, mode).await
             {
                 debug!("Cache hit for compatibility check");
                 return Ok(cached_result);
@@ -148,7 +148,7 @@ impl CompatibilityChecker {
                     old_schema.content_hash.clone(),
                     mode,
                     result.clone(),
-                );
+                ).await;
             }
 
             return Ok(result);
@@ -186,7 +186,7 @@ impl CompatibilityChecker {
                 old_schema.content_hash.clone(),
                 mode,
                 result.clone(),
-            );
+            ).await;
         }
 
         Ok(result)

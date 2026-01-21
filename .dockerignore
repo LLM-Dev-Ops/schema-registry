@@ -32,9 +32,9 @@ package-lock.json
 package.json
 
 # Test files
-tests/
-benches/
-examples/
+/tests/
+/benches/
+/examples/
 
 # Environment files
 .env

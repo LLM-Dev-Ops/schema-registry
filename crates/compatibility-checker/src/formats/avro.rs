@@ -26,7 +26,7 @@ impl AvroCompatibilityChecker {
     /// Extract fields from Avro record schema
     fn extract_fields<'a>(&self, schema: &'a AvroSchema) -> Option<&'a Vec<RecordField>> {
         match schema {
-            AvroSchema::Record { fields, .. } => Some(fields),
+            AvroSchema::Record(record_schema) => Some(&record_schema.fields),
             _ => None,
         }
     }
@@ -82,10 +82,10 @@ impl AvroCompatibilityChecker {
             }
 
             // Records require field-by-field comparison
-            (AvroSchema::Record { fields: w_fields, .. }, AvroSchema::Record { fields: r_fields, .. }) => {
+            (AvroSchema::Record(w_record), AvroSchema::Record(r_record)) => {
                 // Check if all reader fields can be satisfied by writer fields
-                r_fields.iter().all(|r_field| {
-                    w_fields.iter().any(|w_field| {
+                r_record.fields.iter().all(|r_field| {
+                    w_record.fields.iter().any(|w_field| {
                         w_field.name == r_field.name
                             && self.are_types_compatible(&w_field.schema, &r_field.schema)
                     }) || r_field.default.is_some()

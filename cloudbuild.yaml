@@ -1,0 +1,183 @@
+# ============================================================================
+# Cloud Build Configuration for LLM Schema Registry
+# Builds and deploys the unified service to Cloud Run
+# ============================================================================
+#
+# ARCHITECTURE: LLM-SCHEMA-REGISTRY is the AUTHORITATIVE CANONICAL SCHEMA SERVICE
+# - Serves runtime-accessible, versioned schemas to all agents and services
+# - ALL schema endpoints exposed via ONE unified Google Cloud Run service
+# - Stateless service - NO direct database connections
+# - ALL persistence via ruvector-service only
+#
+# Usage:
+#   gcloud builds submit --config=cloudbuild.yaml \
+#     --substitutions=_ENVIRONMENT=dev,_RUVECTOR_SERVICE_URL=https://ruvector-service.run.app
+#
+# ============================================================================
+
+steps:
+  # Step 0: Validate build environment
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'validate-env'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "=============================================="
+        echo "LLM Schema Registry - Production Deployment"
+        echo "=============================================="
+        echo "Project: $PROJECT_ID"
+        echo "Environment: ${_ENVIRONMENT}"
+        echo "Commit: $COMMIT_SHA"
+        echo "=============================================="
+
+  # Step 1: Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    waitFor: ['validate-env']
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:$COMMIT_SHA'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:latest'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:${_ENVIRONMENT}'
+      - '-f'
+      - 'Dockerfile'
+      - '--target'
+      - 'runtime-server'
+      - '--cache-from'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:latest'
+      - '--build-arg'
+      - 'BUILD_VERSION=$COMMIT_SHA'
+      - '.'
+    timeout: '1800s'
+
+  # Step 2: Push container images
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-commit-sha'
+    waitFor: ['build-image']
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-latest'
+    waitFor: ['build-image']
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:latest'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-env-tag'
+    waitFor: ['build-image']
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:${_ENVIRONMENT}'
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-cloud-run'
+    waitFor: ['push-commit-sha', 'push-latest', 'push-env-tag']
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'llm-schema-registry'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:$COMMIT_SHA'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+      - '--cpu'
+      - '${_CPU}'
+      - '--memory'
+      - '${_MEMORY}'
+      - '--min-instances'
+      - '${_MIN_INSTANCES}'
+      - '--max-instances'
+      - '${_MAX_INSTANCES}'
+      - '--concurrency'
+      - '80'
+      - '--timeout'
+      - '300s'
+      - '--service-account'
+      - 'llm-schema-registry-sa@$PROJECT_ID.iam.gserviceaccount.com'
+      - '--set-env-vars'
+      - 'SERVER_MODE=memory,SERVICE_NAME=llm-schema-registry,SERVICE_VERSION=$COMMIT_SHA,PLATFORM_ENV=${_ENVIRONMENT},RUST_LOG=info,RUST_BACKTRACE=1,JSON_LOGS=true,MAX_SCHEMA_SIZE=1048576,VALIDATION_TIMEOUT_MS=5000,STRICT_MODE=false,ENABLE_SEMANTIC_CHECKS=true,ENABLE_PERFORMANCE_CHECKS=true,ENABLE_SECURITY_CHECKS=true,MAX_NESTING_DEPTH=50,MAX_PROPERTIES=500,TELEMETRY_ENDPOINT=${_TELEMETRY_ENDPOINT},OTLP_ENDPOINT=${_TELEMETRY_ENDPOINT},TRACE_SAMPLING_RATE=0.1,RUVECTOR_SERVICE_URL=${_RUVECTOR_SERVICE_URL}'
+      - '--set-secrets'
+      - 'RUVECTOR_API_KEY=ruvector-api-key:latest'
+      - '--labels'
+      - 'app=llm-schema-registry,team=agentics,component=schema-governance,environment=${_ENVIRONMENT}'
+
+  # Step 4: Verify deployment
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'verify-deployment'
+    waitFor: ['deploy-cloud-run']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Verifying deployment..."
+        SERVICE_URL=$(gcloud run services describe llm-schema-registry \
+          --region=${_REGION} --format='value(status.url)')
+        echo "Service URL: $SERVICE_URL"
+
+        # Wait for service to be ready
+        sleep 10
+
+        # Health checks
+        echo "Testing liveness endpoint..."
+        curl -sf "$SERVICE_URL/" && \
+          echo "✓ Liveness check passed" || echo "✗ Liveness check failed"
+
+        echo "Testing health endpoint..."
+        curl -sf "$SERVICE_URL/health" && \
+          echo "✓ Health check passed" || echo "✗ Health check failed"
+
+        echo "Testing readiness endpoint..."
+        curl -sf "$SERVICE_URL/readyz" && \
+          echo "✓ Readiness check passed" || echo "✗ Readiness check failed"
+
+        echo ""
+        echo "=============================================="
+        echo "Deployment Complete!"
+        echo "=============================================="
+        echo "Service URL: $SERVICE_URL"
+        echo ""
+        echo "Endpoints:"
+        echo "  Liveness:   $SERVICE_URL/"
+        echo "  Liveness:   $SERVICE_URL/healthz"
+        echo "  Readiness:  $SERVICE_URL/readyz"
+        echo "  Health:     $SERVICE_URL/health"
+        echo "  Schemas:    $SERVICE_URL/api/v1/schemas"
+        echo "  Validate:   $SERVICE_URL/api/v1/validate/{id}"
+        echo "=============================================="
+
+# Substitution defaults (environment-specific)
+substitutions:
+  _ENVIRONMENT: 'dev'
+  _REGION: 'us-central1'
+  _CPU: '2'
+  _MEMORY: '1Gi'
+  _MIN_INSTANCES: '0'
+  _MAX_INSTANCES: '10'
+  _RUVECTOR_SERVICE_URL: 'https://ruvector-service-dev.run.app'
+  _TELEMETRY_ENDPOINT: 'https://llm-observatory.agentics.dev/v1/traces'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+  substitution_option: 'ALLOW_LOOSE'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/llm-schema-registry/schema-registry:${_ENVIRONMENT}'
+
+timeout: '3600s'

@@ -24,26 +24,24 @@ RUN protoc --version
 WORKDIR /app
 
 # Copy manifests
-COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
+COPY Cargo.toml rust-toolchain.toml ./
 COPY crates/ ./crates/
 
 # Copy proto files for gRPC compilation
 COPY proto/ ./proto/
 
-# Build dependencies first (cached layer)
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/app/target \
-    cargo fetch
+# Remove tests from workspace (not needed for build, excluded in .dockerignore)
+RUN sed -i '/"tests",/d' Cargo.toml
 
-# Build all binaries in release mode with optimizations
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/app/target \
-    cargo build --release --workspace && \
-    cp target/release/schema-registry-server /tmp/schema-registry-server && \
-    cp target/release/schema-cli /tmp/schema-cli
+# Fetch dependencies first (cached layer)
+RUN cargo fetch
 
-# Verify binaries were built
-RUN ls -lh /tmp/schema-registry-server /tmp/schema-cli
+# Build only the schema-registry-server (main service binary)
+RUN cargo build --release --package schema-registry-server && \
+    cp target/release/schema-registry-server /tmp/schema-registry-server
+
+# Verify binary was built
+RUN ls -lh /tmp/schema-registry-server
 
 # ============================================================================
 # Stage 2: Runtime Image - Server
@@ -54,53 +52,7 @@ FROM debian:bookworm-slim AS runtime-server
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create non-root user
-RUN groupadd -r schema-registry && \
-    useradd -r -g schema-registry -u 1000 schema-registry && \
-    mkdir -p /app /data /config && \
-    chown -R schema-registry:schema-registry /app /data /config
-
-# Set working directory
-WORKDIR /app
-
-# Copy server binary from builder
-COPY --from=builder /tmp/schema-registry-server /app/schema-registry-server
-
-# Copy configuration template
-COPY --chown=schema-registry:schema-registry .env.example /config/config.example
-
-# Switch to non-root user
-USER schema-registry
-
-# Expose ports
-# 8080: HTTP REST API
-# 9090: gRPC API
-# 9091: Metrics endpoint
-EXPOSE 8080 9090 9091
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD ["/app/schema-registry-server", "health"] || exit 1
-
-# Set environment variables
-ENV RUST_LOG=info \
-    RUST_BACKTRACE=1
-
-# Run the server
-ENTRYPOINT ["/app/schema-registry-server"]
-CMD ["serve"]
-
-# ============================================================================
-# Stage 3: Runtime Image - CLI
-# ============================================================================
-FROM debian:bookworm-slim AS runtime-cli
-
-# Install runtime dependencies only
-RUN apt-get update && apt-get install -y \
-    ca-certificates \
-    libssl3 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
@@ -109,21 +61,35 @@ RUN groupadd -r schema-registry && \
     mkdir -p /app && \
     chown -R schema-registry:schema-registry /app
 
+# Set working directory
 WORKDIR /app
 
-# Copy CLI binary from builder
-COPY --from=builder /tmp/schema-cli /app/schema-cli
+# Copy server binary from builder
+COPY --from=builder /tmp/schema-registry-server /app/schema-registry-server
 
 # Switch to non-root user
 USER schema-registry
 
+# Expose port 8080 (Cloud Run standard port)
+EXPOSE 8080
+
+# Health check - uses liveness endpoint for fast startup
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/healthz || exit 1
+
 # Set environment variables
 ENV RUST_LOG=info \
-    RUST_BACKTRACE=1
+    RUST_BACKTRACE=1 \
+    PORT=8080
 
-# Run the CLI
-ENTRYPOINT ["/app/schema-cli"]
-CMD ["--help"]
+# Run the server
+ENTRYPOINT ["/app/schema-registry-server"]
+
+# ============================================================================
+# Stage 3: Runtime Image - CLI (placeholder for future CLI build)
+# ============================================================================
+# Note: CLI build temporarily disabled due to compatibility crate issues
+# FROM debian:bookworm-slim AS runtime-cli
 
 # ============================================================================
 # Default target is runtime-server

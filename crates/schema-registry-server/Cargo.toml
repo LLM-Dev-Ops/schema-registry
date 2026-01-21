@@ -42,3 +42,4 @@ sha2 = { workspace = true }
 hex = { workspace = true }
 prometheus = { workspace = true }
 async-trait = { workspace = true }
+reqwest = { workspace = true }

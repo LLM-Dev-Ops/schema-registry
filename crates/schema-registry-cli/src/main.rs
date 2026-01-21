@@ -9,7 +9,7 @@ mod error;
 mod output;
 
 use clap::{Parser, Subcommand};
-use commands::{admin, analytics, benchmark, lineage, migration, schema};
+use commands::{admin, agent, analytics, benchmark, lineage, migration, schema};
 use error::Result;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
@@ -49,6 +49,10 @@ enum Commands {
     /// Schema management commands
     #[command(subcommand)]
     Schema(schema::SchemaCommand),
+
+    /// Schema Validation Agent commands
+    #[command(subcommand)]
+    Agent(agent::AgentCommand),
 
     /// Lineage tracking commands
     #[command(subcommand)]
@@ -115,6 +119,7 @@ async fn run(cli: Cli) -> Result<()> {
 
     match cli.command {
         Commands::Schema(cmd) => schema::execute(cmd, &config, cli.output).await,
+        Commands::Agent(cmd) => agent::execute(cmd, &config, cli.output).await,
         Commands::Lineage(cmd) => lineage::execute(cmd, &config, cli.output).await,
         Commands::Analytics(cmd) => analytics::execute(cmd, &config, cli.output).await,
         Commands::Migration(cmd) => migration::execute(cmd, &config, cli.output).await,

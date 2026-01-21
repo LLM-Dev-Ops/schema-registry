@@ -1,0 +1,80 @@
+[package]
+name = "schema-validation-agent"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Schema Validation Agent for ruvector-service integration - emits DecisionEvents"
+keywords = ["schema", "validation", "agent", "decision-event", "ruvector"]
+categories = ["development-tools", "data-structures"]
+
+[[bin]]
+name = "schema-validation-agent"
+path = "src/main.rs"
+
+[lib]
+name = "schema_validation_agent"
+path = "src/lib.rs"
+
+[dependencies]
+# Internal crates
+schema-registry-core = { workspace = true }
+compatibility-checker = { package = "llm-schema-registry-compatibility", version = "0.1.0", path = "../compatibility-checker" }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Identifiers
+uuid = { workspace = true }
+
+# Time
+chrono = { workspace = true }
+
+# Hashing
+sha2 = { workspace = true }
+hex = { workspace = true }
+
+# Async runtime
+tokio = { workspace = true }
+
+# Error handling
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+
+# Logging/Tracing
+tracing = { workspace = true }
+
+# Schema formats
+apache-avro = { workspace = true }
+
+# HTTP client for ruvector-service
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
+
+# Regex for format detection
+regex = { workspace = true }
+
+# Metrics
+metrics = { workspace = true }
+
+# HTTP server (for Edge Function)
+axum = { workspace = true }
+
+# Tracing subscriber for telemetry
+tracing-subscriber = { workspace = true }
+tracing-opentelemetry = { workspace = true }
+opentelemetry = { workspace = true }
+opentelemetry-otlp = { workspace = true }
+opentelemetry_sdk = { workspace = true }
+
+# Prometheus metrics
+metrics-exporter-prometheus = { workspace = true }
+prometheus = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util", "macros"] }
+mockall = { workspace = true }
+wiremock = "0.5"

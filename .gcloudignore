@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+
+# Build artifacts
+target/
+*.o
+*.a
+*.so
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Development files
+.env
+.env.local
+*.log
+*.tmp
+
+# Test files (but not the tests workspace member)
+test_data/
+*.test
+*_test.rs
+
+# Documentation (not needed in container)
+docs/
+*.md
+!README.md
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Node modules (if any)
+node_modules/
+
+# Cache directories
+.cache/
+__pycache__/
+
+# Kubernetes/Helm configs (separate deployment)
+deployments/kubernetes/
+helm/
+
+# Local development
+.devcontainer/
+docker-compose*.yml
+
+# Benchmark binaries (but not the crate itself)
+/benches/

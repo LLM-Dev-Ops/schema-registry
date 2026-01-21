@@ -38,7 +38,17 @@ Cargo.lock
 
 # Node modules (if using any JS tooling)
 node_modules/
+
+# Claude Code / Claude Flow
+.claude/
 .claude-flow/
+.swarm/
+.mcp.json
+CLAUDE.md
+
+# Google Cloud SDK (local installation)
+google-cloud-sdk/
+*.tar.gz
 
 # Plans directory (keep the directory but ignore temp files)
 plans/*.tmp
