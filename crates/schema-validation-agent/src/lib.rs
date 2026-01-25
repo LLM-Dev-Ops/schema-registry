@@ -96,6 +96,7 @@
 pub mod compatibility_checker;
 pub mod decision_event;
 pub mod handler;
+pub mod infrastructure_signals;
 pub mod ruvector_client;
 pub mod telemetry;
 pub mod types;
@@ -118,11 +119,26 @@ pub use handler::{create_router, AppState};
 // Re-export telemetry for observability
 pub use telemetry::{TelemetryConfig, TelemetryEmitter};
 
+// Re-export infrastructure signals for Phase 6 Layer 1
+pub use infrastructure_signals::{
+    ConfigValidationDetails, ConfigValidationError, ComponentHealth,
+    InfrastructureSignal, InfrastructureSignalEmitter, InfrastructureSignalType,
+    IntegrationHealthDetails, PerformanceBudgetGuard, PerformanceMetrics,
+    SchemaViolationDetails, SchemaViolationEntry, SignalDetails, SignalSeverity, SignalStatus,
+    MAX_LATENCY_MS, MAX_TOKENS,
+};
+
 /// Prelude module for convenient imports
 pub mod prelude {
     pub use crate::compatibility_checker::{CompatibilityChecker, CompatibilityCheckerConfig};
     pub use crate::decision_event::{DecisionEvent, DecisionType};
     pub use crate::handler::{create_router, AppState};
+    pub use crate::infrastructure_signals::{
+        ConfigValidationDetails, InfrastructureSignal, InfrastructureSignalEmitter,
+        InfrastructureSignalType, IntegrationHealthDetails, PerformanceBudgetGuard,
+        PerformanceMetrics, SchemaViolationDetails, SignalSeverity, SignalStatus,
+        MAX_LATENCY_MS, MAX_TOKENS,
+    };
     pub use crate::ruvector_client::{RuVectorClient, RuVectorClientConfig};
     pub use crate::telemetry::{TelemetryConfig, TelemetryEmitter};
     pub use crate::types::{

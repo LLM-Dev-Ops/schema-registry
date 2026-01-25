@@ -109,9 +109,9 @@ steps:
       - '--service-account'
       - 'llm-schema-registry-sa@$PROJECT_ID.iam.gserviceaccount.com'
       - '--set-env-vars'
-      - 'SERVER_MODE=memory,SERVICE_NAME=llm-schema-registry,SERVICE_VERSION=$COMMIT_SHA,PLATFORM_ENV=${_ENVIRONMENT},RUST_LOG=info,RUST_BACKTRACE=1,JSON_LOGS=true,MAX_SCHEMA_SIZE=1048576,VALIDATION_TIMEOUT_MS=5000,STRICT_MODE=false,ENABLE_SEMANTIC_CHECKS=true,ENABLE_PERFORMANCE_CHECKS=true,ENABLE_SECURITY_CHECKS=true,MAX_NESTING_DEPTH=50,MAX_PROPERTIES=500,TELEMETRY_ENDPOINT=${_TELEMETRY_ENDPOINT},OTLP_ENDPOINT=${_TELEMETRY_ENDPOINT},TRACE_SAMPLING_RATE=0.1,RUVECTOR_SERVICE_URL=${_RUVECTOR_SERVICE_URL}'
+      - 'SERVER_MODE=memory,SERVICE_NAME=llm-schema-registry,SERVICE_VERSION=$COMMIT_SHA,PLATFORM_ENV=${_ENVIRONMENT},RUST_LOG=info,RUST_BACKTRACE=1,JSON_LOGS=true,MAX_SCHEMA_SIZE=1048576,VALIDATION_TIMEOUT_MS=5000,STRICT_MODE=false,ENABLE_SEMANTIC_CHECKS=true,ENABLE_PERFORMANCE_CHECKS=true,ENABLE_SECURITY_CHECKS=true,MAX_NESTING_DEPTH=50,MAX_PROPERTIES=500,TELEMETRY_ENDPOINT=${_TELEMETRY_ENDPOINT},OTLP_ENDPOINT=${_TELEMETRY_ENDPOINT},TRACE_SAMPLING_RATE=0.1,MAX_TOKENS=800,MAX_LATENCY_MS=1500,INFRASTRUCTURE_SIGNAL_ENABLED=true'
       - '--set-secrets'
-      - 'RUVECTOR_API_KEY=ruvector-api-key:latest'
+      - 'RUVECTOR_SERVICE_URL=RUVECTOR_SERVICE_URL:latest,RUVECTOR_API_KEY=RUVECTOR_API_KEY:latest'
       - '--labels'
       - 'app=llm-schema-registry,team=agentics,component=schema-governance,environment=${_ENVIRONMENT}'
 
@@ -124,39 +124,39 @@ steps:
       - '-c'
       - |
         echo "Verifying deployment..."
-        SERVICE_URL=$(gcloud run services describe llm-schema-registry \
+        SVC_URL=$$(gcloud run services describe llm-schema-registry \
           --region=${_REGION} --format='value(status.url)')
-        echo "Service URL: $SERVICE_URL"
+        echo "Service URL: $$SVC_URL"
 
         # Wait for service to be ready
         sleep 10
 
         # Health checks
         echo "Testing liveness endpoint..."
-        curl -sf "$SERVICE_URL/" && \
+        curl -sf "$$SVC_URL/" && \
           echo "✓ Liveness check passed" || echo "✗ Liveness check failed"
 
         echo "Testing health endpoint..."
-        curl -sf "$SERVICE_URL/health" && \
+        curl -sf "$$SVC_URL/health" && \
           echo "✓ Health check passed" || echo "✗ Health check failed"
 
         echo "Testing readiness endpoint..."
-        curl -sf "$SERVICE_URL/readyz" && \
+        curl -sf "$$SVC_URL/readyz" && \
           echo "✓ Readiness check passed" || echo "✗ Readiness check failed"
 
         echo ""
         echo "=============================================="
         echo "Deployment Complete!"
         echo "=============================================="
-        echo "Service URL: $SERVICE_URL"
+        echo "Service URL: $$SVC_URL"
         echo ""
         echo "Endpoints:"
-        echo "  Liveness:   $SERVICE_URL/"
-        echo "  Liveness:   $SERVICE_URL/healthz"
-        echo "  Readiness:  $SERVICE_URL/readyz"
-        echo "  Health:     $SERVICE_URL/health"
-        echo "  Schemas:    $SERVICE_URL/api/v1/schemas"
-        echo "  Validate:   $SERVICE_URL/api/v1/validate/{id}"
+        echo "  Liveness:   $$SVC_URL/"
+        echo "  Liveness:   $$SVC_URL/healthz"
+        echo "  Readiness:  $$SVC_URL/readyz"
+        echo "  Health:     $$SVC_URL/health"
+        echo "  Schemas:    $$SVC_URL/api/v1/schemas"
+        echo "  Validate:   $$SVC_URL/api/v1/validate/{id}"
         echo "=============================================="
 
 # Substitution defaults (environment-specific)
@@ -167,7 +167,6 @@ substitutions:
   _MEMORY: '1Gi'
   _MIN_INSTANCES: '0'
   _MAX_INSTANCES: '10'
-  _RUVECTOR_SERVICE_URL: 'https://ruvector-service-dev.run.app'
   _TELEMETRY_ENDPOINT: 'https://llm-observatory.agentics.dev/v1/traces'
 
 options:
