@@ -1,6 +1,8 @@
+use agentics_instrumentation::{AgenticsCollector, Artifact};
 use axum::{
     extract::{Path, State},
     http::StatusCode,
+    middleware as axum_mw,
     response::{IntoResponse, Response},
     routing::{get, post},
     Json, Router,
@@ -198,6 +200,19 @@ enum AppError {
     InvalidInput(String),
     Internal(String),
     ServiceUnavailable(String),
+}
+
+impl std::fmt::Display for AppError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AppError::Database(e) => write!(f, "Database error: {}", e),
+            AppError::Redis(e) => write!(f, "Cache error: {}", e),
+            AppError::NotFound(msg) => write!(f, "{}", msg),
+            AppError::InvalidInput(msg) => write!(f, "{}", msg),
+            AppError::Internal(msg) => write!(f, "{}", msg),
+            AppError::ServiceUnavailable(msg) => write!(f, "{}", msg),
+        }
+    }
 }
 
 impl IntoResponse for AppError {
@@ -464,8 +479,11 @@ async fn metrics_handler() -> impl IntoResponse {
 
 async fn register_schema(
     State(state): State<AppState>,
+    spans: AgenticsCollector,
     Json(req): Json<RegisterSchemaRequest>,
 ) -> Result<(StatusCode, Json<RegisterSchemaResponse>), AppError> {
+    let guard = spans.begin_agent("schema-registration").await;
+
     // Parse subject into namespace and name (format: namespace.name or just name)
     let (namespace, name) = if let Some(dot_pos) = req.subject.rfind('.') {
         let (ns, nm) = req.subject.split_at(dot_pos);
@@ -696,6 +714,17 @@ async fn register_schema(
 
     tracing::info!(schema_id = %id, "Schema registered successfully");
 
+    guard
+        .attach_artifact(Artifact {
+            artifact_id: id,
+            uri: Some(format!("/api/v1/schemas/{}", id)),
+            content_hash: Some(content_hash.clone()),
+            filename: Some(format!("{}.{}.schema", namespace, name)),
+            artifact_type: "registered_schema".to_string(),
+        })
+        .await;
+    guard.close().await;
+
     Ok((
         StatusCode::CREATED,
         Json(RegisterSchemaResponse {
@@ -708,148 +737,171 @@ async fn register_schema(
 
 async fn get_schema(
     State(state): State<AppState>,
+    spans: AgenticsCollector,
     Path(id): Path<Uuid>,
 ) -> Result<Json<GetSchemaResponse>, AppError> {
+    let guard = spans.begin_agent("schema-retrieval").await;
     tracing::debug!(schema_id = %id, mode = ?state.mode, "Fetching schema");
 
-    match state.mode {
-        ServerMode::Serverless => {
-            // Try memory cache first
-            if let Some(entry) = state.memory_cache.read().await.get(&id) {
-                return Ok(Json(schema_entry_to_response(entry)));
-            }
-
-            // Try RuVector service
-            if let Some(ref url) = state.ruvector_url {
-                let client = RuVectorClient::new(url);
-                if let Ok(Some(entry)) = client.get_schema(id).await {
-                    // Cache locally
-                    state.memory_cache.write().await.insert(id, entry.clone());
-                    return Ok(Json(schema_entry_to_response(&entry)));
+    let result: Result<Json<GetSchemaResponse>, AppError> = async {
+        match state.mode {
+            ServerMode::Serverless => {
+                // Try memory cache first
+                if let Some(entry) = state.memory_cache.read().await.get(&id) {
+                    return Ok(Json(schema_entry_to_response(entry)));
                 }
-            }
 
-            Err(AppError::NotFound(format!("Schema {} not found", id)))
-        }
-        ServerMode::MemoryOnly => {
-            let cache = state.memory_cache.read().await;
-            match cache.get(&id) {
-                Some(entry) => Ok(Json(schema_entry_to_response(entry))),
-                None => Err(AppError::NotFound(format!("Schema {} not found", id))),
-            }
-        }
-        ServerMode::Full => {
-            // Try Redis cache first
-            if let Some(ref redis) = state.redis {
-                let cache_key = format!("schema:{}", id);
-                let mut conn = redis.clone();
-
-                if let Ok(Some(cached)) = redis::cmd("GET")
-                    .arg(&cache_key)
-                    .query_async::<_, Option<String>>(&mut conn)
-                    .await
-                {
-                    if let Ok(schema_data) = serde_json::from_str::<serde_json::Value>(&cached) {
-                        tracing::debug!(schema_id = %id, "Cache hit");
-                        return Ok(Json(json_to_schema_response(id, &schema_data)));
+                // Try RuVector service
+                if let Some(ref url) = state.ruvector_url {
+                    let client = RuVectorClient::new(url);
+                    if let Ok(Some(entry)) = client.get_schema(id).await {
+                        // Cache locally
+                        state.memory_cache.write().await.insert(id, entry.clone());
+                        return Ok(Json(schema_entry_to_response(&entry)));
                     }
                 }
+
+                Err(AppError::NotFound(format!("Schema {} not found", id)))
             }
+            ServerMode::MemoryOnly => {
+                let cache = state.memory_cache.read().await;
+                match cache.get(&id) {
+                    Some(entry) => Ok(Json(schema_entry_to_response(entry))),
+                    None => Err(AppError::NotFound(format!("Schema {} not found", id))),
+                }
+            }
+            ServerMode::Full => {
+                // Try Redis cache first
+                if let Some(ref redis) = state.redis {
+                    let cache_key = format!("schema:{}", id);
+                    let mut conn = redis.clone();
 
-            tracing::debug!(schema_id = %id, "Cache miss, querying database");
-
-            // Fallback to PostgreSQL
-            let db = state.db.as_ref()
-                .ok_or_else(|| AppError::ServiceUnavailable("Database not connected".to_string()))?;
-
-            let row: Option<(
-                Uuid,
-                String,
-                String,
-                i32,
-                i32,
-                i32,
-                String,
-                String,
-                String,
-                String,
-                chrono::DateTime<Utc>,
-                chrono::DateTime<Utc>,
-            )> = sqlx::query_as(
-                r#"
-                SELECT id, namespace, name, version_major, version_minor, version_patch,
-                       format, content, state, compatibility_mode, created_at, updated_at
-                FROM schemas
-                WHERE id = $1
-                LIMIT 1
-                "#,
-            )
-            .bind(id)
-            .fetch_optional(db)
-            .await?;
-
-            match row {
-                Some((
-                    id,
-                    namespace,
-                    name,
-                    version_major,
-                    version_minor,
-                    version_patch,
-                    format,
-                    content,
-                    state_str,
-                    compat_mode,
-                    created_at,
-                    updated_at,
-                )) => {
-                    let version = format!("{}.{}.{}", version_major, version_minor, version_patch);
-                    let schema_json = serde_json::from_str(&content).unwrap_or(serde_json::json!({}));
-
-                    // Update cache
-                    if let Some(ref redis) = state.redis {
-                        let cache_key = format!("schema:{}", id);
-                        let cache_value = serde_json::json!({
-                            "id": id.to_string(),
-                            "namespace": namespace,
-                            "name": name,
-                            "version_major": version_major,
-                            "version_minor": version_minor,
-                            "version_patch": version_patch,
-                            "format": format,
-                            "content": content,
-                            "state": state_str,
-                            "compatibility_mode": compat_mode,
-                        });
-
-                        let mut conn = redis.clone();
-                        let _: Result<(), _> = redis::cmd("SET")
-                            .arg(&cache_key)
-                            .arg(serde_json::to_string(&cache_value).unwrap())
-                            .arg("EX")
-                            .arg(3600)
-                            .query_async(&mut conn)
-                            .await;
+                    if let Ok(Some(cached)) = redis::cmd("GET")
+                        .arg(&cache_key)
+                        .query_async::<_, Option<String>>(&mut conn)
+                        .await
+                    {
+                        if let Ok(schema_data) = serde_json::from_str::<serde_json::Value>(&cached) {
+                            tracing::debug!(schema_id = %id, "Cache hit");
+                            return Ok(Json(json_to_schema_response(id, &schema_data)));
+                        }
                     }
+                }
 
-                    Ok(Json(GetSchemaResponse {
+                tracing::debug!(schema_id = %id, "Cache miss, querying database");
+
+                // Fallback to PostgreSQL
+                let db = state.db.as_ref()
+                    .ok_or_else(|| AppError::ServiceUnavailable("Database not connected".to_string()))?;
+
+                let row: Option<(
+                    Uuid,
+                    String,
+                    String,
+                    i32,
+                    i32,
+                    i32,
+                    String,
+                    String,
+                    String,
+                    String,
+                    chrono::DateTime<Utc>,
+                    chrono::DateTime<Utc>,
+                )> = sqlx::query_as(
+                    r#"
+                    SELECT id, namespace, name, version_major, version_minor, version_patch,
+                           format, content, state, compatibility_mode, created_at, updated_at
+                    FROM schemas
+                    WHERE id = $1
+                    LIMIT 1
+                    "#,
+                )
+                .bind(id)
+                .fetch_optional(db)
+                .await?;
+
+                match row {
+                    Some((
                         id,
                         namespace,
                         name,
-                        version,
+                        version_major,
+                        version_minor,
+                        version_patch,
                         format,
-                        schema: schema_json,
                         content,
-                        state: state_str,
-                        compatibility_mode: compat_mode,
-                        created_at: created_at.to_rfc3339(),
-                        updated_at: updated_at.to_rfc3339(),
-                    }))
+                        state_str,
+                        compat_mode,
+                        created_at,
+                        updated_at,
+                    )) => {
+                        let version = format!("{}.{}.{}", version_major, version_minor, version_patch);
+                        let schema_json = serde_json::from_str(&content).unwrap_or(serde_json::json!({}));
+
+                        // Update cache
+                        if let Some(ref redis) = state.redis {
+                            let cache_key = format!("schema:{}", id);
+                            let cache_value = serde_json::json!({
+                                "id": id.to_string(),
+                                "namespace": namespace,
+                                "name": name,
+                                "version_major": version_major,
+                                "version_minor": version_minor,
+                                "version_patch": version_patch,
+                                "format": format,
+                                "content": content,
+                                "state": state_str,
+                                "compatibility_mode": compat_mode,
+                            });
+
+                            let mut conn = redis.clone();
+                            let _: Result<(), _> = redis::cmd("SET")
+                                .arg(&cache_key)
+                                .arg(serde_json::to_string(&cache_value).unwrap())
+                                .arg("EX")
+                                .arg(3600)
+                                .query_async(&mut conn)
+                                .await;
+                        }
+
+                        Ok(Json(GetSchemaResponse {
+                            id,
+                            namespace,
+                            name,
+                            version,
+                            format,
+                            schema: schema_json,
+                            content,
+                            state: state_str,
+                            compatibility_mode: compat_mode,
+                            created_at: created_at.to_rfc3339(),
+                            updated_at: updated_at.to_rfc3339(),
+                        }))
+                    }
+                    None => Err(AppError::NotFound(format!("Schema {} not found", id))),
                 }
-                None => Err(AppError::NotFound(format!("Schema {} not found", id))),
             }
         }
+    }.await;
+
+    match &result {
+        Ok(_) => {
+            guard
+                .attach_artifact(Artifact {
+                    artifact_id: id,
+                    uri: Some(format!("/api/v1/schemas/{}", id)),
+                    content_hash: None,
+                    filename: None,
+                    artifact_type: "retrieved_schema".to_string(),
+                })
+                .await;
+        }
+        Err(e) => {
+            guard.set_error(e.to_string()).await;
+        }
     }
+    guard.close().await;
+    result
 }
 
 fn schema_entry_to_response(entry: &SchemaEntry) -> GetSchemaResponse {
@@ -902,9 +954,11 @@ fn json_to_schema_response(id: Uuid, data: &serde_json::Value) -> GetSchemaRespo
 
 async fn validate_data(
     State(state): State<AppState>,
+    spans: AgenticsCollector,
     Path(schema_id): Path<Uuid>,
     Json(data): Json<serde_json::Value>,
 ) -> Result<Json<ValidateResponse>, AppError> {
+    let guard = spans.begin_agent("schema-validation").await;
     tracing::debug!(schema_id = %schema_id, "Validating data");
 
     // Get schema format and content based on mode
@@ -913,12 +967,24 @@ async fn validate_data(
             let cache = state.memory_cache.read().await;
             match cache.get(&schema_id) {
                 Some(entry) => (entry.format.clone(), entry.content.clone()),
-                None => return Err(AppError::NotFound(format!("Schema {} not found", schema_id))),
+                None => {
+                    guard.set_error(format!("Schema {} not found", schema_id)).await;
+                    guard.close().await;
+                    return Err(AppError::NotFound(format!("Schema {} not found", schema_id)));
+                }
             }
         }
         ServerMode::Full => {
             let db = state.db.as_ref()
-                .ok_or_else(|| AppError::ServiceUnavailable("Database not connected".to_string()))?;
+                .ok_or_else(|| AppError::ServiceUnavailable("Database not connected".to_string()));
+            let db = match db {
+                Ok(db) => db,
+                Err(e) => {
+                    guard.set_error(e.to_string()).await;
+                    guard.close().await;
+                    return Err(e);
+                }
+            };
 
             let row: Option<(String, String)> = sqlx::query_as(
                 "SELECT format, content FROM schemas WHERE id = $1 LIMIT 1",
@@ -929,7 +995,11 @@ async fn validate_data(
 
             match row {
                 Some((f, c)) => (f, c),
-                None => return Err(AppError::NotFound(format!("Schema {} not found", schema_id))),
+                None => {
+                    guard.set_error(format!("Schema {} not found", schema_id)).await;
+                    guard.close().await;
+                    return Err(AppError::NotFound(format!("Schema {} not found", schema_id)));
+                }
             }
         }
     };
@@ -939,6 +1009,17 @@ async fn validate_data(
         "JSON" | "JSON_SCHEMA" => data.is_object() || data.is_array(),
         _ => true,
     };
+
+    guard
+        .attach_artifact(Artifact {
+            artifact_id: Uuid::new_v4(),
+            uri: Some(format!("/api/v1/validate/{}", schema_id)),
+            content_hash: None,
+            filename: None,
+            artifact_type: "validation_result".to_string(),
+        })
+        .await;
+    guard.close().await;
 
     Ok(Json(ValidateResponse {
         is_valid,
@@ -952,8 +1033,10 @@ async fn validate_data(
 
 async fn check_compatibility(
     State(state): State<AppState>,
+    spans: AgenticsCollector,
     Json(req): Json<CompatibilityCheckRequest>,
 ) -> Result<Json<CompatibilityCheckResponse>, AppError> {
+    let guard = spans.begin_agent("compatibility-check").await;
     tracing::debug!(
         schema_id = %req.schema_id,
         compared_schema_id = %req.compared_schema_id,
@@ -998,6 +1081,17 @@ async fn check_compatibility(
 
     // Simple compatibility check - if hashes are same, they're compatible
     let is_compatible = hash1 == hash2 || true; // For now, always compatible
+
+    guard
+        .attach_artifact(Artifact {
+            artifact_id: Uuid::new_v4(),
+            uri: None,
+            content_hash: None,
+            filename: None,
+            artifact_type: "compatibility_report".to_string(),
+        })
+        .await;
+    guard.close().await;
 
     Ok(Json(CompatibilityCheckResponse {
         is_compatible,
@@ -1072,17 +1166,27 @@ async fn main() -> anyhow::Result<()> {
     };
 
     // Build API router - this starts IMMEDIATELY
-    let api_router = Router::new()
-        // Health and readiness probes (no auth, always available)
+    //
+    // Health/readiness probes are NOT instrumented with agentics middleware
+    // (no X-Execution-ID / X-Parent-Span-ID headers required).
+    let health_routes = Router::new()
         .route("/", get(liveness))
         .route("/health", get(health_check))
         .route("/healthz", get(liveness))
-        .route("/readyz", get(readiness))
-        // API endpoints
+        .route("/readyz", get(readiness));
+
+    // API routes are instrumented: every request MUST carry execution context
+    // headers and will receive a response wrapped in an AgenticsResponse envelope.
+    let instrumented_api = Router::new()
         .route("/api/v1/schemas", post(register_schema))
         .route("/api/v1/schemas/:id", get(get_schema))
         .route("/api/v1/validate/:id", post(validate_data))
         .route("/api/v1/compatibility/check", post(check_compatibility))
+        .layer(axum_mw::from_fn(agentics_instrumentation::agentics_middleware));
+
+    let api_router = Router::new()
+        .merge(health_routes)
+        .merge(instrumented_api)
         .with_state(state.clone())
         .layer(TraceLayer::new_for_http());
 

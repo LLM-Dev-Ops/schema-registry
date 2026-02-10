@@ -1,0 +1,25 @@
+[package]
+name = "agentics-instrumentation"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Agentics execution system instrumentation for the LLM Schema Registry"
+keywords = ["agentics", "instrumentation", "execution-graph", "spans", "observability"]
+categories = ["development-tools"]
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+axum = { workspace = true }
+tower = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+http-body-util = { workspace = true }
+bytes = { workspace = true }

@@ -15,6 +15,7 @@ members = [
     "crates/llm-integrations",
     "crates/benchmarks",
     "crates/schema-validation-agent",
+    "crates/agentics-instrumentation",
     "tests",
 ]
 resolver = "2"
@@ -42,6 +43,7 @@ schema-registry-analytics = { version = "0.1.0", path = "crates/schema-registry-
 schema-registry-lineage = { version = "0.1.0", path = "crates/schema-registry-lineage" }
 schema-registry-migration = { version = "0.1.0", path = "crates/schema-registry-migration" }
 schema-registry-benchmarks = { version = "0.1.0", path = "crates/benchmarks" }
+agentics-instrumentation = { version = "0.1.0", path = "crates/agentics-instrumentation" }
 
 # LLM Dev Ops dependencies
 llm-config-core = { git = "https://github.com/LLM-Dev-Ops/config-manager", tag = "v0.5.1" }
@@ -94,6 +96,9 @@ uuid = { version = "1.6", features = ["v4", "serde"] }
 
 # Time
 chrono = { version = "0.4", features = ["serde"] }
+
+# HTTP body utilities
+http-body-util = "0.1"
 
 # Other utilities
 url = { version = "2.5", features = ["serde"] }

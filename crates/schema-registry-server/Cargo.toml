@@ -24,6 +24,7 @@ schema-registry-validation = { workspace = true }
 schema-registry-compatibility = { workspace = true }
 schema-registry-security = { workspace = true }
 schema-registry-observability = { workspace = true }
+agentics-instrumentation = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }

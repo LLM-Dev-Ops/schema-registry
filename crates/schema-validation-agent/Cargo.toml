@@ -60,6 +60,9 @@ regex = { workspace = true }
 # Metrics
 metrics = { workspace = true }
 
+# Agentics execution instrumentation
+agentics-instrumentation = { workspace = true }
+
 # HTTP server (for Edge Function)
 axum = { workspace = true }
 

@@ -9,6 +9,7 @@
 //! The handler supports validation, inspection, and diff endpoints,
 //! each producing DecisionEvents that are persisted to ruvector-service.
 
+use agentics_instrumentation::{AgenticsCollector, Artifact};
 use crate::decision_event::DecisionEvent;
 use crate::ruvector_client::{RuVectorClient, RuVectorError};
 use crate::telemetry::TelemetryEmitter;
@@ -22,6 +23,7 @@ use crate::validation_engine::{ValidationEngine, ValidationEngineConfig};
 use axum::{
     extract::{Json, State},
     http::StatusCode,
+    middleware as axum_mw,
     response::IntoResponse,
     routing::{get, post},
     Router,
@@ -260,14 +262,25 @@ impl AppState {
 // ============================================================================
 
 /// Create the Edge Function router
+///
+/// Health, readiness, and metrics routes are NOT instrumented with agentics
+/// middleware. Validation, inspection, and diff routes ARE instrumented and
+/// require `X-Execution-ID` and `X-Parent-Span-ID` headers.
 pub fn create_router(state: Arc<AppState>) -> Router {
-    Router::new()
+    let health_routes = Router::new()
         .route("/health", get(health_check))
         .route("/ready", get(readiness_check))
-        .route("/metrics", get(metrics_endpoint))
+        .route("/metrics", get(metrics_endpoint));
+
+    let instrumented_routes = Router::new()
         .route("/validate", post(validate_schema))
         .route("/inspect", post(inspect_schema))
         .route("/diff", post(diff_schemas))
+        .layer(axum_mw::from_fn(agentics_instrumentation::agentics_middleware));
+
+    Router::new()
+        .merge(health_routes)
+        .merge(instrumented_routes)
         .with_state(state)
 }
 
@@ -331,15 +344,17 @@ async fn metrics_endpoint(State(state): State<Arc<AppState>>) -> impl IntoRespon
 // ============================================================================
 
 /// Main validation endpoint
-#[instrument(skip(state, request), fields(
+#[instrument(skip(state, spans, request), fields(
     namespace = %request.namespace,
     name = %request.name,
     content_size = request.schema_content.len()
 ))]
 async fn validate_schema(
     State(state): State<Arc<AppState>>,
+    spans: AgenticsCollector,
     Json(request): Json<ValidateRequest>,
 ) -> Result<Json<ValidateResponse>, (StatusCode, Json<ErrorResponse>)> {
+    let guard = spans.begin_agent("schema-validation-agent").await;
     let start = Instant::now();
 
     // 1. Parse format hint
@@ -508,6 +523,17 @@ async fn validate_schema(
         "Validation request completed"
     );
 
+    guard
+        .attach_artifact(Artifact {
+            artifact_id: decision_event.id,
+            uri: None,
+            content_hash: Some(decision_event.content_hash.clone()),
+            filename: None,
+            artifact_type: "decision_event".to_string(),
+        })
+        .await;
+    guard.close().await;
+
     Ok(Json(response))
 }
 
@@ -516,11 +542,14 @@ async fn validate_schema(
 // ============================================================================
 
 /// Schema inspection endpoint (detailed analysis without persistence)
-#[instrument(skip(state, request), fields(content_size = request.schema_content.len()))]
+#[instrument(skip(state, spans, request), fields(content_size = request.schema_content.len()))]
 async fn inspect_schema(
     State(state): State<Arc<AppState>>,
+    spans: AgenticsCollector,
     Json(request): Json<InspectRequest>,
 ) -> Result<Json<InspectResponse>, (StatusCode, Json<ErrorResponse>)> {
+    let guard = spans.begin_agent("schema-inspection-agent").await;
+
     // Parse format hint
     let format_hint = request.format.as_ref().and_then(|f| match f.to_lowercase().as_str() {
         "jsonschema" | "json-schema" | "json_schema" => Some(SchemaFormat::JsonSchema),
@@ -546,6 +575,17 @@ async fn inspect_schema(
 
     // Extract metadata from schema
     let metadata = extract_schema_metadata(&request.schema_content, &validation_result.detected_format);
+
+    guard
+        .attach_artifact(Artifact {
+            artifact_id: Uuid::new_v4(),
+            uri: None,
+            content_hash: None,
+            filename: None,
+            artifact_type: "inspection_report".to_string(),
+        })
+        .await;
+    guard.close().await;
 
     Ok(Json(InspectResponse {
         format: format!("{:?}", validation_result.detected_format),
@@ -649,14 +689,16 @@ fn extract_schema_metadata(content: &str, format: &SchemaFormat) -> serde_json::
 // ============================================================================
 
 /// Schema diff endpoint (compare two schemas)
-#[instrument(skip(state, request), fields(
+#[instrument(skip(state, spans, request), fields(
     schema_a_size = request.schema_a.len(),
     schema_b_size = request.schema_b.len()
 ))]
 async fn diff_schemas(
     State(state): State<Arc<AppState>>,
+    spans: AgenticsCollector,
     Json(request): Json<DiffRequest>,
 ) -> Result<Json<DiffResponse>, (StatusCode, Json<ErrorResponse>)> {
+    let guard = spans.begin_agent("schema-diff-agent").await;
     // Parse format hint
     let format_hint = request.format.as_ref().and_then(|f| match f.to_lowercase().as_str() {
         "jsonschema" | "json-schema" | "json_schema" => Some(SchemaFormat::JsonSchema),
@@ -717,6 +759,17 @@ async fn diff_schemas(
     );
 
     let identical = changes.is_empty();
+
+    guard
+        .attach_artifact(Artifact {
+            artifact_id: Uuid::new_v4(),
+            uri: None,
+            content_hash: None,
+            filename: None,
+            artifact_type: "diff_report".to_string(),
+        })
+        .await;
+    guard.close().await;
 
     Ok(Json(DiffResponse {
         identical,
