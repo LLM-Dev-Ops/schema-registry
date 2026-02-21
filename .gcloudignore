@@ -52,3 +52,24 @@ docker-compose*.yml
 
 # Benchmark binaries (but not the crate itself)
 /benches/
+
+# Rust source (not needed for Cloud Functions)
+crates/
+Cargo.toml
+Cargo.lock
+rust-toolchain.toml
+
+# SDKs and npm sub-packages (not part of CF entry point)
+sdks/
+npm-packages/
+
+# Proto source (contracts consumed at build time, not runtime)
+proto/
+
+# Container configs (Cloud Run, not Cloud Functions)
+Dockerfile
+Makefile
+
+# Tests
+tests/
+test.js

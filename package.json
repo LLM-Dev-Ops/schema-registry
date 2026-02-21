@@ -1,6 +1,19 @@
 {
+  "name": "schema-registry-agents",
+  "version": "1.0.0",
+  "description": "Schema Registry Agents - Cloud Function entry point",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "claude-code": "^1.0.0",
-    "claude-flow": "^2.7.41"
+    "claude-flow": "^2.7.41",
+    "express": "^4.21.0",
+    "cors": "^2.8.5"
   }
 }
