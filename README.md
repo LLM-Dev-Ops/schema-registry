@@ -4,21 +4,47 @@
 
 [![Documentation](https://img.shields.io/badge/docs-complete-brightgreen.svg)](./plans/SPARC-OVERVIEW.md)
 [![SPARC Methodology](https://img.shields.io/badge/methodology-SPARC-blue.svg)](./plans/SPARC-OVERVIEW.md)
-[![Status](https://img.shields.io/badge/status-production_ready-brightgreen.svg)](./plans/)
+[![Status](https://img.shields.io/badge/status-alpha-orange.svg)](./plans/)
 [![License](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](./LICENSE)
-[![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)](./.github/workflows)
+[![CI](https://github.com/LLM-Dev-Ops/schema-registry/actions/workflows/ci.yml/badge.svg)](https://github.com/LLM-Dev-Ops/schema-registry/actions/workflows/ci.yml)
 
 ---
 
-## 🎉 Project Status: Production Ready ✅
+## Project Status: Alpha
 
-**Current Phase:** ✅ **LLM Integrations & Client SDKs Complete**
-**Documentation:** 500KB+ across 30+ comprehensive documents
-**Implementation:** Cargo workspace with 10 crates, 8 tests passing, zero compilation errors
-**LLM Integrations:** 5 modules (Prompt, RAG, Serving, Training, Eval) - 100% complete
-**Client SDKs:** 5 languages (Python, TypeScript, Go, Java, Rust) - Production ready
-**Testing:** 550+ tests planned, integration tests operational, >85% coverage target
-**Next Step:** Load testing and production deployment
+**Current phase:** Implementation in progress. The workspace does not yet build clean, so
+this project is not ready for production use.
+
+**Workspace:** [`Cargo.toml`](./Cargo.toml) declares 17 members.
+
+**Build:** `cargo build --workspace --locked` currently **fails** — `schema-validation-agent`
+does not compile.
+
+**Tests:** the last measured run (2026-07-27, rustc 1.97.1) was:
+
+```
+cargo test --workspace --locked --no-fail-fast \
+  --exclude schema-validation-agent \
+  --exclude schema-registry-server \
+  --exclude llm-schema-cli \
+  --exclude schema-registry-integration-tests
+
+454 passed, 42 failed, 1 ignored
+```
+
+Those four members are excluded because they do not compile; the figure above therefore
+covers the **13 members that do compile**. Most of the 42 failures are concentrated in
+`schema-registry-observability`. The authoritative, continuously updated numbers are the
+ones the [CI workflow](https://github.com/LLM-Dev-Ops/schema-registry/actions/workflows/ci.yml)
+publishes on every push — the badge above reflects that job, not a hand-written claim.
+
+**Documentation:** 79 Markdown documents under `plans/` and `docs/`. These describe the
+intended design; they are not evidence of implemented behaviour.
+
+**Client SDKs:** 5 languages (Python, TypeScript, Go, Java, Rust). Not exercised by the run above.
+
+**Next step:** make the four non-compiling members build so that `cargo test --workspace`
+runs end to end, then fix the 42 failing tests.
 
 ### Quick Links
 
@@ -26,7 +52,7 @@
 |----------|---------|----------|
 | [**SDK Delivery Report**](./SDK-DELIVERY-REPORT.md) | 🎯 **Client SDKs implementation** | **Developers, Integrators** |
 | [**LLM Integrations Report**](./docs/LLM-INTEGRATIONS-DELIVERY-REPORT.md) | 🔌 **LLM module integrations** | **Platform Engineers** |
-| [**COMPLETION CERTIFICATE**](./plans/SPARC-COMPLETION-CERTIFICATE.md) | 🏆 **Final deliverables summary** | **Executives, stakeholders** |
+| [Design-Phase Completion Record](./plans/SPARC-COMPLETION-CERTIFICATE.md) | 📐 SPARC design documents produced — not a statement of implementation status | Architects, reviewers |
 | [**SPARC Overview**](./plans/SPARC-OVERVIEW.md) | 📋 Master navigation & project summary | Everyone (start here!) |
 | [**Quick Reference**](./plans/QUICK-REFERENCE.md) | ⚡ Quick lookup by role/task | Developers, DevOps |
 | [**Testing Guide**](./docs/TESTING.md) | 🧪 Comprehensive testing guide | Developers, QA |
@@ -38,7 +64,7 @@
 
 ### ✅ LLM Module Integrations (November 2025)
 
-**5 production-ready LLM module integrations** implemented following enterprise-grade patterns:
+**5 LLM module integrations** implemented following enterprise-grade patterns:
 
 1. **Prompt Management (LangChain)** - Schema-validated prompt templates
    - 5-minute schema caching, automatic notification on changes
@@ -64,12 +90,11 @@
 - Event-driven architecture with Kafka/RabbitMQ support
 - Webhook dispatcher with exponential backoff (3 retries, 500ms-5s)
 - Retry logic with circuit breaker pattern
-- 8 unit tests passing, zero compilation errors
 - See [LLM Integrations Report](./docs/LLM-INTEGRATIONS-DELIVERY-REPORT.md) for details
 
 ### ✅ Client SDKs (November 2025)
 
-**5 production-ready client SDKs** for easy integration:
+**5 client SDKs** for easy integration:
 
 | Language | Status | Features | Location |
 |----------|--------|----------|----------|
@@ -248,21 +273,20 @@ cargo run --bin llm-schema-cli -- --help
 
 ### Build & Test Status
 
-The project successfully compiles with all 13 crates and comprehensive test infrastructure:
+See [Project Status](#project-status-alpha) for the current build result and test
+count. Both come from an executed run and are reproduced by CI on every push; do not
+restate them here.
 
-**Testing Infrastructure:**
-- ✅ 550+ tests implemented (Unit, Integration, E2E, Property)
-- ✅ >85% code coverage target configured
-- ✅ 100+ integration tests with real services (PostgreSQL, Redis, S3)
-- ✅ 50+ end-to-end workflow tests
-- ✅ 30+ property-based tests (proptest)
-- ✅ 4 load testing scenarios (k6)
-- ✅ 5 chaos engineering scenarios (Chaos Mesh)
-- ✅ Full CI/CD integration (GitHub Actions)
-- ✅ Automated coverage reporting (cargo-tarpaulin)
+**Test tooling present in the tree** (configured, not a statement of results):
+- Integration tests against real services (PostgreSQL, Redis, S3) under `tests/`
+- Property-based tests (proptest) — currently do not compile
+- Load testing scenarios (k6) and chaos engineering scenarios (Chaos Mesh)
+- CI via GitHub Actions (`.github/workflows/ci.yml`)
+- Coverage reporting via cargo-tarpaulin (`tarpaulin.toml`); no coverage figure is
+  published yet, so none is claimed
 
 **Core Crates:**
-- **schema-registry-core** - Core types, traits, state machine (15 tests passing)
+- **schema-registry-core** - Core types, traits, state machine
 - **llm-schema-api** - REST (Axum) and gRPC (Tonic) APIs
 - **schema-registry-storage** - Multi-backend storage (PostgreSQL, Redis, S3)
 - **schema-registry-validation** - JSON Schema, Avro, Protobuf validation
