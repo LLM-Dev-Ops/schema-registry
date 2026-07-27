@@ -146,16 +146,33 @@ jobs:
             ${{ runner.os }}-${{ matrix.rust }}-target-test-
 
       - name: Build
-        run: cargo build --workspace --all-features --verbose
+        run: cargo build --workspace --all-features --locked --verbose
 
       - name: Run tests
-        run: cargo test --workspace --all-features --verbose
+        shell: bash
+        # pipefail so tee does not mask a failing cargo test
+        run: |
+          set -o pipefail
+          cargo test --workspace --all-features --locked --verbose 2>&1 \
+            | tee test-output.txt
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/schema_registry_test
           REDIS_URL: redis://localhost:6379
 
+      - name: Report test count
+        if: always()
+        shell: bash
+        run: |
+          if [ ! -f test-output.txt ]; then
+            echo "no test output produced" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          awk '/^test result:/ { p += $4; f += $6; i += $8 }
+               END { printf "%d passed, %d failed, %d ignored\n", p, f, i }' \
+            test-output.txt | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Run doc tests
-        run: cargo test --workspace --doc --all-features
+        run: cargo test --workspace --doc --all-features --locked
 
   # ==========================================================================
   # Code Coverage

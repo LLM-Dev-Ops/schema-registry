@@ -55,22 +55,19 @@ impl IntoResponse for AgenticsCollectorRejection {
     }
 }
 
+#[async_trait::async_trait]
 impl<S> FromRequestParts<S> for AgenticsCollector
 where
     S: Send + Sync,
 {
     type Rejection = AgenticsCollectorRejection;
 
-    fn from_request_parts(
-        parts: &mut Parts,
-        _state: &S,
-    ) -> impl std::future::Future<Output = Result<Self, Self::Rejection>> + Send {
-        let result = parts
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        parts
             .extensions
             .get::<Arc<SpanCollector>>()
             .cloned()
             .map(AgenticsCollector)
-            .ok_or(AgenticsCollectorRejection);
-        std::future::ready(result)
+            .ok_or(AgenticsCollectorRejection)
     }
 }
