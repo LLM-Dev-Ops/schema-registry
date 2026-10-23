@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
-const [baseline, candidate, runtime, output] = process.argv.slice(2).map(resolve);
+const [baseline, candidate, runtime, output] = process.argv.slice(2).map((value) => resolve(value));
 assert.ok(baseline && candidate && runtime && output, 'usage: node evaluate-request-boundary.mjs BASELINE CANDIDATE PINNED_TOOLS OUTPUT');
 
 const packageVersion = (name) => JSON.parse(
