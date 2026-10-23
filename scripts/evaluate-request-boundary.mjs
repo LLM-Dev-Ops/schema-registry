@@ -23,7 +23,7 @@ const {
   'node_modules/@metaharness/flywheel/dist/index.js',
 )));
 
-const probeSource = String.raw\`
+const probeSource = String.raw`
 const http = require('node:http');
 const path = require('node:path');
 const repo = process.argv[1];
@@ -114,7 +114,7 @@ const server = app.listen(0, '127.0.0.1', async () => {
     server.close();
   }
 });
-\`;
+`;
 
 const measurements = [];
 const runProbe = (dir) => {
