@@ -274,8 +274,17 @@ app.use((req, res) => {
 // ── Structured parser and internal errors ───────────────────────────────────
 app.use((err, req, res, _next) => {
   const isBadJson = err instanceof SyntaxError && err.status === 400 && 'body' in err;
-  const status = isBadJson ? 400 : 500;
-  const error = isBadJson ? 'Request body contains invalid JSON' : 'Internal server error';
+  // Trust only parser error kinds, not arbitrary exception status/messages.
+  const parserErrors = {
+    'entity.too.large': [413, 'Request body exceeds maximum size'],
+    'charset.unsupported': [415, 'Unsupported request charset'],
+    'encoding.unsupported': [415, 'Unsupported content encoding'],
+  };
+  const known = Object.prototype.hasOwnProperty.call(parserErrors, err.type)
+    ? parserErrors[err.type] : undefined;
+  const [status, error] = isBadJson
+    ? [400, 'Request body contains invalid JSON']
+    : known || [500, 'Internal server error'];
 
   return res.status(status).json(buildResponse(req, { error }, [
     { layer: 'AGENT_ROUTING', status: 'error' },
@@ -293,3 +302,4 @@ if (require.main === module) {
     console.log(`${SERVICE_NAME} listening on port ${port}`);
   });
 }
+
