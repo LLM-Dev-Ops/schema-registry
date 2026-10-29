@@ -302,4 +302,3 @@ if (require.main === module) {
     console.log(`${SERVICE_NAME} listening on port ${port}`);
   });
 }
-
