@@ -1,0 +1,9 @@
+{
+  "baseline": "607f047fb2199aef59aeeba4854d79ebd4ee7049",
+  "objective": "Classify oversized body and unsupported charset/encoding without internal-error status or detail leakage",
+  "holdouts": 3,
+  "anchors": 6,
+  "acceptance": ["all holdouts and anchors", "existing npm test passes unchanged", "full locked Rust workspace passes", "production npm audit has no high findings", "exact-head required CI and approvals pass"],
+  "budgetsSeconds": {"probe": 20, "npmTest": 30, "rustWorkspace": 180, "audit": 35},
+  "parity": "same external fixture, lockfile and budgets; no speed claim"
+}

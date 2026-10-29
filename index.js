@@ -6,9 +6,47 @@ const crypto = require('crypto');
 
 const app = express();
 
+const CORRELATION_ID_MAX_LENGTH = 128;
+const ORIGIN_ENV = 'CORS_ALLOWED_ORIGINS';
+
+function configuredOrigins() {
+  return new Set(
+    (process.env[ORIGIN_ENV] || '')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+  );
+}
+
+function resolveCorsOrigin(origin, callback) {
+  if (!origin) {
+    callback(null, false);
+    return;
+  }
+
+  const allowed = configuredOrigins();
+  callback(null, allowed.has('*') || allowed.has(origin) ? origin : false);
+}
+
+function validCorrelationId(value) {
+  return typeof value === 'string'
+    && value.length <= CORRELATION_ID_MAX_LENGTH
+    && /^[\x21-\x7e]+$/.test(value);
+}
+
+// ── Request identity ────────────────────────────────────────────────────────
+app.use((req, res, next) => {
+  const supplied = req.headers['x-correlation-id'];
+  req.correlationId = validCorrelationId(supplied) ? supplied : crypto.randomUUID();
+  res.set('X-Correlation-ID', req.correlationId);
+  next();
+});
+
 // ── CORS ────────────────────────────────────────────────────────────────────
+// Browser access is deny-by-default. Set a comma-delimited allowlist through
+// CORS_ALLOWED_ORIGINS; "*" is accepted only when configured explicitly.
 app.use(cors({
-  origin: true,
+  origin: resolveCorsOrigin,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID'],
   exposedHeaders: ['X-Correlation-ID'],
@@ -27,7 +65,7 @@ const MAX_SCHEMA_SIZE = 1024 * 1024; // 1 MB
 
 function buildExecutionMetadata(req) {
   return {
-    trace_id: req.headers['x-correlation-id'] || crypto.randomUUID(),
+    trace_id: req.correlationId,
     timestamp: new Date().toISOString(),
     service: SERVICE_NAME,
     execution_id: crypto.randomUUID(),
@@ -139,7 +177,7 @@ app.post('/v1/schema-registry/validate', (req, res) => {
     { layer: 'AGENT_ROUTING', status: 'completed' },
   ];
 
-  const { schema_content, schema_type, strict } = req.body;
+  const { schema_content, schema_type, strict } = req.body || {};
 
   // Input validation
   if (!schema_content) {
@@ -230,6 +268,27 @@ app.use((req, res) => {
     ],
   }, [
     { layer: 'AGENT_ROUTING', status: 'error' },
+  ]));
+});
+
+// ── Structured parser and internal errors ───────────────────────────────────
+app.use((err, req, res, _next) => {
+  const isBadJson = err instanceof SyntaxError && err.status === 400 && 'body' in err;
+  // Trust only parser error kinds, not arbitrary exception status/messages.
+  const parserErrors = {
+    'entity.too.large': [413, 'Request body exceeds maximum size'],
+    'charset.unsupported': [415, 'Unsupported request charset'],
+    'encoding.unsupported': [415, 'Unsupported content encoding'],
+  };
+  const known = Object.prototype.hasOwnProperty.call(parserErrors, err.type)
+    ? parserErrors[err.type] : undefined;
+  const [status, error] = isBadJson
+    ? [400, 'Request body contains invalid JSON']
+    : known || [500, 'Internal server error'];
+
+  return res.status(status).json(buildResponse(req, { error }, [
+    { layer: 'AGENT_ROUTING', status: 'error' },
+    { layer: 'REQUEST_BOUNDARY', status: 'error' },
   ]));
 });
 

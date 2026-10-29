@@ -15,29 +15,30 @@ function assert(condition, label) {
   }
 }
 
-async function request(method, path, body) {
+async function request(method, path, body, headers = {}) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: '127.0.0.1',
       port: 9876,
       path,
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...headers },
     };
     const req = http.request(options, (res) => {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
-        resolve({ status: res.statusCode, body: JSON.parse(data) });
+        resolve({ status: res.statusCode, body: JSON.parse(data), headers: res.headers });
       });
     });
     req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
+    if (body !== undefined) req.write(typeof body === 'string' ? body : JSON.stringify(body));
     req.end();
   });
 }
 
 async function run() {
+  process.env.CORS_ALLOWED_ORIGINS = 'https://console.example.com';
   const app = require('./index').handler;
   const server = app.listen(9876);
 
@@ -145,12 +146,49 @@ async function run() {
       const req = http.request(options, (res) => {
         let data = '';
         res.on('data', (chunk) => { data += chunk; });
-        res.on('end', () => resolve({ status: res.statusCode, body: JSON.parse(data) }));
+        res.on('end', () => resolve({ status: res.statusCode, body: JSON.parse(data), headers: res.headers }));
       });
       req.on('error', reject);
       req.end();
     });
     assert(corrReq.body.execution_metadata.trace_id === corrId, 'trace_id matches X-Correlation-ID header');
+    assert(corrReq.headers['x-correlation-id'] === corrId, 'response header matches X-Correlation-ID');
+
+    const overlongId = 'x'.repeat(129);
+    const replaced = await request('GET', '/v1/schema-registry/health', undefined, {
+      'X-Correlation-ID': overlongId,
+    });
+    assert(replaced.headers['x-correlation-id'] !== overlongId, 'overlong correlation ID is replaced');
+
+    // ── Browser request boundary ─────────────────────────────────────────
+    console.log('\nBrowser request boundary:');
+    const allowedOrigin = await request('GET', '/v1/schema-registry/health', undefined, {
+      Origin: 'https://console.example.com',
+    });
+    assert(
+      allowedOrigin.headers['access-control-allow-origin'] === 'https://console.example.com',
+      'configured browser origin is allowed',
+    );
+
+    const deniedOrigin = await request('GET', '/v1/schema-registry/health', undefined, {
+      Origin: 'https://attacker.example',
+    });
+    assert(
+      deniedOrigin.headers['access-control-allow-origin'] === undefined,
+      'unconfigured browser origin is denied',
+    );
+
+    const malformed = await request(
+      'POST',
+      '/v1/schema-registry/validate',
+      '{',
+      { 'Content-Type': 'application/json' },
+    );
+    assert(malformed.status === 400, 'malformed JSON returns 400');
+    assert(
+      malformed.body.error === 'Request body contains invalid JSON',
+      'malformed JSON returns the structured error contract',
+    );
 
     // ── 404 ──────────────────────────────────────────────────────────────
     console.log('\n404 handler:');
