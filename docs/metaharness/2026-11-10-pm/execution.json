@@ -1,0 +1,392 @@
+{
+  "inverseVerified": true,
+  "flywheelDecoded": {
+    "sha256": "e91c79e53e22e36d35e2e4b2d7a129e0cd9ac6fa1bc25f2b53f34074e8785562",
+    "bytes": 948720
+  },
+  "lockMatch": true,
+  "install": {
+    "bytes": 1333,
+    "sha256": "1cb72a81a435b59e6983ab73200e0963c3ad4480e50f91fa9c080135d9e94ace",
+    "excerptOnly": true,
+    "excerpt": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\nnpm error code EUSAGE\nnpm error\nnpm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.\nnpm error\nnpm error Missing: worker_threads@ from lock file\nnpm error\nnpm error Clean install a project\nnpm error\nnpm error Usage:\nnpm error npm ci\nnpm error\nnpm error Options:\nnpm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]\nnpm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]\nnpm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]\nnpm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts]\nnpm error [--allow-git <all|none|root>] [--no-audit] [--no-bin-links] [--no-fund]\nnpm error [--dry-run]\nnpm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]\nnpm error [--workspaces] [--include-workspace-root] [--install-links]\nnpm error\nnpm error aliases: clean-install, ic, install-clean, isntall-clean\nnpm error\nnpm error Run \"npm help ci\" for more info\nnpm error A complete log of this run can be found in: /home/agent/.npm/_logs/2026-11-10T19_03_39_164Z-debug-0.log\n"
+  },
+  "base-npm10-install": {
+    "bytes": 119,
+    "sha256": "5045e4f06d10fa40fc79d977ddb69921df463d49fdd3c7b156e1914a5e1caf3e",
+    "excerptOnly": true,
+    "excerpt": "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead\n\nadded 484 packages in 9s\n"
+  },
+  "base-npm10-test": {
+    "bytes": 1936,
+    "sha256": "a52c8fd03bacd54bcd4036bb60da9b257964a6b66b4026be591a9adb1e0ae0b0",
+    "excerptOnly": true,
+    "excerpt": "ed\n\nValidation - missing fields:\n  PASS: missing schema_content returns 400\n  PASS: error response has execution_metadata\n  PASS: missing schema_type returns 400\n  PASS: unsupported schema_type returns 400\n\nValidation - JSON Schema:\n  PASS: valid JSON schema returns 200\n  PASS: valid flag is true\n  PASS: has execution_metadata\n  PASS: has 2 layers\n  PASS: first layer is AGENT_ROUTING\n  PASS: second layer is SCHEMA_REGISTRY_VALIDATE\n  PASS: duration_ms is a number\n  PASS: invalid JSON returns 422\n  PASS: valid flag is false\n  PASS: has errors\n\nValidation - Avro:\n  PASS: valid Avro schema returns 200\n  PASS: valid flag is true\n  PASS: Avro missing type returns 422\n\nValidation - Protobuf:\n  PASS: valid Protobuf returns 200\n  PASS: valid flag is true\n  PASS: empty Protobuf returns 422\n\nValidation - strict mode:\n  PASS: strict mode promotes warnings to errors\n\nCorrelation ID:\n  PASS: trace_id matches X-Correlation-ID header\n  PASS: response header matches X-Correlation-ID\n  PASS: overlong correlation ID is replaced\n\nBrowser request boundary:\n  PASS: configured browser origin is allowed\n  PASS: unconfigured browser origin is denied\n  PASS: malformed JSON returns 400\n  PASS: malformed JSON returns the structured error contract\n\n404 handler:\n  PASS: unknown route returns 404\n  PASS: 404 has execution_metadata\n  PASS: 404 lists available routes\n\n==================================================\nResults: 41 passed, 0 failed, 41 total\n==================================================\n"
+  },
+  "comparator-install": {
+    "bytes": 119,
+    "sha256": "c5900e4a11f921be19dc385c36e0ac7d3f129d692a0e33b55a1c0685d09e870b",
+    "excerptOnly": true,
+    "excerpt": "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead\n\nadded 484 packages in 4s\n"
+  },
+  "comparator-test": {
+    "bytes": 1784,
+    "sha256": "7c8f53c2a29c5a78f3287449533944c2a00f237e6271a81a0f58ed1eb4b3510a",
+    "excerptOnly": true,
+    "excerpt": "ed\n\nValidation - missing fields:\n  PASS: missing schema_content returns 400\n  PASS: error response has execution_metadata\n  PASS: missing schema_type returns 400\n  PASS: unsupported schema_type returns 400\n\nValidation - JSON Schema:\n  PASS: valid JSON schema returns 200\n  PASS: valid flag is true\n  PASS: has execution_metadata\n  PASS: has 2 layers\n  PASS: first layer is AGENT_ROUTING\n  PASS: second layer is SCHEMA_REGISTRY_VALIDATE\n  PASS: duration_ms is a number\n  PASS: invalid JSON returns 422\n  PASS: valid flag is false\n  PASS: has errors\n\nValidation - Avro:\n  PASS: valid Avro schema returns 200\n  PASS: valid flag is true\n  PASS: Avro missing type returns 422\n\nValidation - Protobuf:\n  PASS: valid Protobuf returns 200\n  PASS: valid flag is true\n  PASS: empty Protobuf returns 422\n\nValidation - strict mode:\n  PASS: strict mode promotes warnings to errors\n\nCorrelation ID:\n  PASS: trace_id matches X-Correlation-ID header\n  PASS: response header matches X-Correlation-ID\n  PASS: overlong correlation ID is replaced\n\nBrowser request boundary:\n  PASS: configured browser origin is allowed\n  PASS: unconfigured browser origin is denied\n  PASS: malformed JSON returns 400\n  PASS: malformed JSON returns the structured error contract\n\n404 handler:\n  PASS: unknown route returns 404\n  PASS: 404 has execution_metadata\n  PASS: 404 lists available routes\n\n==================================================\nResults: 41 passed, 0 failed, 41 total\n==================================================\n"
+  },
+  "final-install": {
+    "bytes": 119,
+    "sha256": "c223896b4df6c9419f2937589ee2056fa3edec9bb10348ffa090b73a7f9328e0",
+    "excerptOnly": true,
+    "excerpt": "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead\n\nadded 493 packages in 9s\n"
+  },
+  "final-test": {
+    "bytes": 1936,
+    "sha256": "a52c8fd03bacd54bcd4036bb60da9b257964a6b66b4026be591a9adb1e0ae0b0",
+    "excerptOnly": true,
+    "excerpt": "ed\n\nValidation - missing fields:\n  PASS: missing schema_content returns 400\n  PASS: error response has execution_metadata\n  PASS: missing schema_type returns 400\n  PASS: unsupported schema_type returns 400\n\nValidation - JSON Schema:\n  PASS: valid JSON schema returns 200\n  PASS: valid flag is true\n  PASS: has execution_metadata\n  PASS: has 2 layers\n  PASS: first layer is AGENT_ROUTING\n  PASS: second layer is SCHEMA_REGISTRY_VALIDATE\n  PASS: duration_ms is a number\n  PASS: invalid JSON returns 422\n  PASS: valid flag is false\n  PASS: has errors\n\nValidation - Avro:\n  PASS: valid Avro schema returns 200\n  PASS: valid flag is true\n  PASS: Avro missing type returns 422\n\nValidation - Protobuf:\n  PASS: valid Protobuf returns 200\n  PASS: valid flag is true\n  PASS: empty Protobuf returns 422\n\nValidation - strict mode:\n  PASS: strict mode promotes warnings to errors\n\nCorrelation ID:\n  PASS: trace_id matches X-Correlation-ID header\n  PASS: response header matches X-Correlation-ID\n  PASS: overlong correlation ID is replaced\n\nBrowser request boundary:\n  PASS: configured browser origin is allowed\n  PASS: unconfigured browser origin is denied\n  PASS: malformed JSON returns 400\n  PASS: malformed JSON returns the structured error contract\n\n404 handler:\n  PASS: unknown route returns 404\n  PASS: 404 has execution_metadata\n  PASS: 404 lists available routes\n\n==================================================\nResults: 41 passed, 0 failed, 41 total\n==================================================\n"
+  },
+  "exact-test": {
+    "bytes": 1784,
+    "sha256": "7c8f53c2a29c5a78f3287449533944c2a00f237e6271a81a0f58ed1eb4b3510a",
+    "excerptOnly": true,
+    "excerpt": "ed\n\nValidation - missing fields:\n  PASS: missing schema_content returns 400\n  PASS: error response has execution_metadata\n  PASS: missing schema_type returns 400\n  PASS: unsupported schema_type returns 400\n\nValidation - JSON Schema:\n  PASS: valid JSON schema returns 200\n  PASS: valid flag is true\n  PASS: has execution_metadata\n  PASS: has 2 layers\n  PASS: first layer is AGENT_ROUTING\n  PASS: second layer is SCHEMA_REGISTRY_VALIDATE\n  PASS: duration_ms is a number\n  PASS: invalid JSON returns 422\n  PASS: valid flag is false\n  PASS: has errors\n\nValidation - Avro:\n  PASS: valid Avro schema returns 200\n  PASS: valid flag is true\n  PASS: Avro missing type returns 422\n\nValidation - Protobuf:\n  PASS: valid Protobuf returns 200\n  PASS: valid flag is true\n  PASS: empty Protobuf returns 422\n\nValidation - strict mode:\n  PASS: strict mode promotes warnings to errors\n\nCorrelation ID:\n  PASS: trace_id matches X-Correlation-ID header\n  PASS: response header matches X-Correlation-ID\n  PASS: overlong correlation ID is replaced\n\nBrowser request boundary:\n  PASS: configured browser origin is allowed\n  PASS: unconfigured browser origin is denied\n  PASS: malformed JSON returns 400\n  PASS: malformed JSON returns the structured error contract\n\n404 handler:\n  PASS: unknown route returns 404\n  PASS: 404 has execution_metadata\n  PASS: 404 lists available routes\n\n==================================================\nResults: 41 passed, 0 failed, 41 total\n==================================================\n"
+  },
+  "lock-fix": {
+    "bytes": 5499,
+    "sha256": "093711990716c6fc129edfcef8eac20646d04e382a64c76bd61bc78d39c69a4f",
+    "excerptOnly": true,
+    "excerpt": "ithub.com/advisories/GHSA-6pq8-jhm2-2vcw\nfix available via `npm audit fix`\nnode_modules/qs\n\nsharp  <=0.35.5-rc.1\nSeverity: high\nsharp inherited vulnerabilities in libvips: CVE-2026-33327, CVE-2026-33328, CVE-2026-35590, CVE-2026-35591 - https://github.com/advisories/GHSA-f88m-g3jw-g9cj\nsharp: Vulnerabilities in libheif: GHSA-g89c-p67h-r497 and GHSA-2jg2-4ch7-h545 - https://github.com/advisories/GHSA-rgj7-g3m4-5g8c\nsharp : Vulnerability in librsvg dependency CVE-2026-96889 - https://github.com/advisories/GHSA-wq5f-xc86-pv6w\nfix available via `npm audit fix --force`\nWill install claude-flow@3.75.2, which is a breaking change\nnode_modules/sharp\n\nuuid  <11.1.1\nSeverity: moderate\nuuid: Missing buffer bounds check in v3/v5/v6 when buf is provided - https://github.com/advisories/GHSA-w5hq-g745-h8pq\nfix available via `npm audit fix`\nnode_modules/uuid\n  ruv-swarm  <=1.0.23\n  Depends on vulnerable versions of uuid\n  node_modules/ruv-swarm\n\nzod  <4.6.6\nSeverity: high\nZod can exhaust memory while validating oversized constrained collections - https://github.com/advisories/GHSA-mrhx-c7xc-m3w5\nfix available via `npm audit fix --force`\nWill install claude-flow@3.75.2, which is a breaking change\nnode_modules/zod\n  fastmcp  1.0.1 - 3.25.1\n  Depends on vulnerable versions of zod\n  node_modules/fastmcp\n\n15 vulnerabilities (5 moderate, 10 high)\n\nTo address issues that do not require attention, run:\n  npm audit fix\n\nTo address all issues (including breaking changes), run:\n  npm audit fix --force\n"
+  },
+  "darwin": {
+    "bytes": 769,
+    "sha256": "4df9eb29cb67ed94e3fa181ca2a8ca1d41dd88cf0bd4ae71008acde602fdd846",
+    "excerptOnly": true,
+    "excerpt": "note: --sandbox real (the default) scores variants by this repo's own test\ncommand, which cannot distinguish between mutated harness surfaces — every\nvariant will score identically and evolution will not converge on anything\n(see README \"The evaluation substrate\", ADR-099/102). Pass --sandbox mock\n(fast, deterministic), --sandbox agent (executes the real surface code,\nstill offline), or --sandbox llm-agent (genuine real-LLM signal, real API\nspend, ADR-273) for genuine evolutionary signal.\n\nDarwin Mode — leaderboard\n  0.985  baseline  [planner]  safety=1.00  pass=1.00 ◀ winner\n  0.985  g1_v0  [planner]  safety=1.00  pass=1.00\n\nWinner: baseline\nLineage: baseline\nDelta over baseline: +0.000\n\nArtifacts: /workspace/scratch/4f25900b71ff/schema10-exact/.metaharness\n"
+  },
+  "meta": {
+    "bytes": 398,
+    "sha256": "4b7ebbc863c0df1d2a83009f1524740240128036d3ba5342f7f338fa17ae7da1",
+    "excerptOnly": true,
+    "excerpt": "{\n  \"schema\": 1,\n  \"repo\": \"schema-registry-agents\",\n  \"harnessFit\": 76,\n  \"compileConfidence\": 100,\n  \"taskCoverage\": 65,\n  \"toolSafety\": 100,\n  \"memoryUsefulness\": 47,\n  \"estCostPerRunUsd\": 0.048,\n  \"recommendedMode\": \"CLI + MCP\",\n  \"archetype\": \"devops-harness\",\n  \"template\": \"vertical:devops\",\n  \"scaffoldReady\": true,\n  \"hardConstraints\": \"6/6\",\n  \"generatedAt\": \"2026-11-10T19:09:03.025Z\"\n}\n"
+  },
+  "pins": {
+    "node_modules/@metaharness/darwin": {
+      "version": "0.10.3",
+      "resolved": "https://registry.npmjs.org/@metaharness/darwin/-/darwin-0.10.3.tgz",
+      "integrity": "sha512-xqFWTqG8tHk2Gwts07EJgU2E7WANkhjwPc5Dk9nG3tbW8Hqb+O7Ut5ixp8+HoBlod8EgNigMT9MSrOpCpHSXEQ==",
+      "license": "MIT",
+      "bin": {
+        "metaharness-darwin": "dist/cli.js"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/@metaharness/flywheel": {
+      "version": "0.1.12",
+      "resolved": "https://registry.npmjs.org/@metaharness/flywheel/-/flywheel-0.1.12.tgz",
+      "integrity": "sha512-sfcgTRuXUay3qGinQpPkWZkI9IXWrDH209CvbJpzEFgOPaNgwsZjp4NOngAN5xzPUfuqC85AH7pcERa2KNvJsw==",
+      "license": "MIT"
+    },
+    "node_modules/metaharness": {
+      "version": "0.4.2",
+      "resolved": "https://registry.npmjs.org/metaharness/-/metaharness-0.4.2.tgz",
+      "integrity": "sha512-h94B47zBEuNEfKLFMZMV/fRnXBrkwV6L8kMukgioB/9621k6Lm6s2lR2gBKl3BAT1sfN/DYqhsqAJc+6H5PTGQ==",
+      "license": "MIT",
+      "dependencies": {
+        "@metaharness/darwin": "^0.2.2",
+        "@metaharness/flywheel": "^0.1.1",
+        "@metaharness/redblue": "^0.1.1",
+        "@metaharness/weight-eft": "^0.1.0",
+        "kolorist": "^1.8.0",
+        "prompts": "^2.4.2"
+      },
+      "bin": {
+        "harness": "dist/harness-bin.js",
+        "metaharness": "dist/bin.js"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      },
+      "optionalDependencies": {
+        "@ruvector/ruvllm": "^2.5.6"
+      },
+      "peerDependencies": {
+        "@metaharness/kernel": "^0.1.0"
+      },
+      "peerDependenciesMeta": {
+        "@metaharness/kernel": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/metaharness/node_modules/@metaharness/darwin": {
+      "version": "0.2.8",
+      "resolved": "https://registry.npmjs.org/@metaharness/darwin/-/darwin-0.2.8.tgz",
+      "integrity": "sha512-B8tF7IrrSxwKS6fEPEL6N2Juth9WWn+hppLUtUYPTJ2vcHzzZPIg2cS5T9qTyNNuANlTSWnQHnvzlfvYdGNfeQ==",
+      "license": "MIT",
+      "bin": {
+        "metaharness-darwin": "dist/cli.js"
+      },
+      "engines": {
+        "node": ">=20.0.0"
+      }
+    },
+    "node_modules/npm": {
+      "version": "10.8.2",
+      "resolved": "https://registry.npmjs.org/npm/-/npm-10.8.2.tgz",
+      "integrity": "sha512-x/AIjFIKRllrhcb48dqUNAAZl0ig9+qMuN91RpZo3Cb2+zuibfh+KISl6+kVVyktDz230JKc208UkQwwMqyB+w==",
+      "bundleDependencies": [
+        "@isaacs/string-locale-compare",
+        "@npmcli/arborist",
+        "@npmcli/config",
+        "@npmcli/fs",
+        "@npmcli/map-workspaces",
+        "@npmcli/package-json",
+        "@npmcli/promise-spawn",
+        "@npmcli/redact",
+        "@npmcli/run-script",
+        "@sigstore/tuf",
+        "abbrev",
+        "archy",
+        "cacache",
+        "chalk",
+        "ci-info",
+        "cli-columns",
+        "fastest-levenshtein",
+        "fs-minipass",
+        "glob",
+        "graceful-fs",
+        "hosted-git-info",
+        "ini",
+        "init-package-json",
+        "is-cidr",
+        "json-parse-even-better-errors",
+        "libnpmaccess",
+        "libnpmdiff",
+        "libnpmexec",
+        "libnpmfund",
+        "libnpmhook",
+        "libnpmorg",
+        "libnpmpack",
+        "libnpmpublish",
+        "libnpmsearch",
+        "libnpmteam",
+        "libnpmversion",
+        "make-fetch-happen",
+        "minimatch",
+        "minipass",
+        "minipass-pipeline",
+        "ms",
+        "node-gyp",
+        "nopt",
+        "normalize-package-data",
+        "npm-audit-report",
+        "npm-install-checks",
+        "npm-package-arg",
+        "npm-pick-manifest",
+        "npm-profile",
+        "npm-registry-fetch",
+        "npm-user-validate",
+        "p-map",
+        "pacote",
+        "parse-conflict-json",
+        "proc-log",
+        "qrcode-terminal",
+        "read",
+        "semver",
+        "spdx-expression-parse",
+        "ssri",
+        "supports-color",
+        "tar",
+        "text-table",
+        "tiny-relative-date",
+        "treeverse",
+        "validate-npm-package-name",
+        "which",
+        "write-file-atomic"
+      ],
+      "license": "Artistic-2.0",
+      "workspaces": [
+        "docs",
+        "smoke-tests",
+        "mock-globals",
+        "mock-registry",
+        "workspaces/*"
+      ],
+      "dependencies": {
+        "@isaacs/string-locale-compare": "^1.1.0",
+        "@npmcli/arborist": "^7.5.4",
+        "@npmcli/config": "^8.3.4",
+        "@npmcli/fs": "^3.1.1",
+        "@npmcli/map-workspaces": "^3.0.6",
+        "@npmcli/package-json": "^5.2.0",
+        "@npmcli/promise-spawn": "^7.0.2",
+        "@npmcli/redact": "^2.0.1",
+        "@npmcli/run-script": "^8.1.0",
+        "@sigstore/tuf": "^2.3.4",
+        "abbrev": "^2.0.0",
+        "archy": "~1.0.0",
+        "cacache": "^18.0.3",
+        "chalk": "^5.3.0",
+        "ci-info": "^4.0.0",
+        "cli-columns": "^4.0.0",
+        "fastest-levenshtein": "^1.0.16",
+        "fs-minipass": "^3.0.3",
+        "glob": "^10.4.2",
+        "graceful-fs": "^4.2.11",
+        "hosted-git-info": "^7.0.2",
+        "ini": "^4.1.3",
+        "init-package-json": "^6.0.3",
+        "is-cidr": "^5.1.0",
+        "json-parse-even-better-errors": "^3.0.2",
+        "libnpmaccess": "^8.0.6",
+        "libnpmdiff": "^6.1.4",
+        "libnpmexec": "^8.1.3",
+        "libnpmfund": "^5.0.12",
+        "libnpmhook": "^10.0.5",
+        "libnpmorg": "^6.0.6",
+        "libnpmpack": "^7.0.4",
+        "libnpmpublish": "^9.0.9",
+        "libnpmsearch": "^7.0.6",
+        "libnpmteam": "^6.0.5",
+        "libnpmversion": "^6.0.3",
+        "make-fetch-happen": "^13.0.1",
+        "minimatch": "^9.0.5",
+        "minipass": "^7.1.1",
+        "minipass-pipeline": "^1.2.4",
+        "ms": "^2.1.2",
+        "node-gyp": "^10.1.0",
+        "nopt": "^7.2.1",
+        "normalize-package-data": "^6.0.2",
+        "npm-audit-report": "^5.0.0",
+        "npm-install-checks": "^6.3.0",
+        "npm-package-arg": "^11.0.2",
+        "npm-pick-manifest": "^9.1.0",
+        "npm-profile": "^10.0.0",
+        "npm-registry-fetch": "^17.1.0",
+        "npm-user-validate": "^2.0.1",
+        "p-map": "^4.0.0",
+        "pacote": "^18.0.6",
+        "parse-conflict-json": "^3.0.1",
+        "proc-log": "^4.2.0",
+        "qrcode-terminal": "^0.12.0",
+        "read": "^3.0.1",
+        "semver": "^7.6.2",
+        "spdx-expression-parse": "^4.0.0",
+        "ssri": "^10.0.6",
+        "supports-color": "^9.4.0",
+        "tar": "^6.2.1",
+        "text-table": "~0.2.0",
+        "tiny-relative-date": "^1.3.0",
+        "treeverse": "^3.0.0",
+        "validate-npm-package-name": "^5.0.1",
+        "which": "^4.0.0",
+        "write-file-atomic": "^5.0.1"
+      },
+      "bin": {
+        "npm": "bin/npm-cli.js",
+        "npx": "bin/npx-cli.js"
+      },
+      "engines": {
+        "node": "^18.17.0 || >=20.5.0"
+      }
+    }
+  },
+  "baseline": {
+    "sha256": "44686db2c5c5707c6274a452d42602b57e846bc9284460083ca74f53108ae5ec",
+    "score": {
+      "variantId": "baseline",
+      "taskSuccess": 1,
+      "testPassRate": 1,
+      "traceQuality": 0.9,
+      "costEfficiency": 1,
+      "latencyEfficiency": 1,
+      "safetyScore": 1,
+      "secretExposure": 0,
+      "destructiveAction": 0,
+      "hallucinatedFile": 0,
+      "toolLoop": 0,
+      "costOverrun": 0,
+      "baseScore": 0.985,
+      "finalScore": 0.985,
+      "promoted": true,
+      "reason": "promoted: finalScore 0.9850 > parent 0.0000 + delta 0.05 (safety 1.00, no test regression)"
+    },
+    "traces": [
+      {
+        "task": "run repository test suite",
+        "exit": 0,
+        "duration": 173,
+        "timedOut": false,
+        "stdoutHash": "e84ef5c6f3496336850117d893c48b7b23eb1b3fb6192f7a9ee1157675352b38",
+        "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "task": "verify generated harness safety",
+        "exit": 0,
+        "duration": 192,
+        "timedOut": false,
+        "stdoutHash": "e84ef5c6f3496336850117d893c48b7b23eb1b3fb6192f7a9ee1157675352b38",
+        "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "task": "check trace quality",
+        "exit": 0,
+        "duration": 146,
+        "timedOut": false,
+        "stdoutHash": "e84ef5c6f3496336850117d893c48b7b23eb1b3fb6192f7a9ee1157675352b38",
+        "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "g1_v0": {
+    "sha256": "1a4257624e0bc60bbc384b3f843df86ee895fa17da353b59ddd683afa7cb5b40",
+    "score": {
+      "variantId": "g1_v0",
+      "taskSuccess": 1,
+      "testPassRate": 1,
+      "traceQuality": 0.9,
+      "costEfficiency": 1,
+      "latencyEfficiency": 1,
+      "safetyScore": 1,
+      "secretExposure": 0,
+      "destructiveAction": 0,
+      "hallucinatedFile": 0,
+      "toolLoop": 0,
+      "costOverrun": 0,
+      "baseScore": 0.985,
+      "finalScore": 0.985,
+      "promoted": false,
+      "reason": "not promoted: finalScore 0.9850 ≤ parent 0.9850 + delta 0.05"
+    },
+    "traces": [
+      {
+        "task": "run repository test suite",
+        "exit": 0,
+        "duration": 162,
+        "timedOut": false,
+        "stdoutHash": "e84ef5c6f3496336850117d893c48b7b23eb1b3fb6192f7a9ee1157675352b38",
+        "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "task": "verify generated harness safety",
+        "exit": 0,
+        "duration": 178,
+        "timedOut": false,
+        "stdoutHash": "e84ef5c6f3496336850117d893c48b7b23eb1b3fb6192f7a9ee1157675352b38",
+        "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "task": "check trace quality",
+        "exit": 0,
+        "duration": 166,
+        "timedOut": false,
+        "stdoutHash": "e84ef5c6f3496336850117d893c48b7b23eb1b3fb6192f7a9ee1157675352b38",
+        "stderrHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  }
+}

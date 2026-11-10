@@ -1,0 +1,224 @@
+{
+  "candidate": "87f3211058dc0d5b58abd83985ee3a5aab0fefcf",
+  "prHeadUnchanged": "711a2ffaa68f5fb7375712a30571374ad5554dfc",
+  "refAttempt": {
+    "content": [
+      {
+        "type": "text",
+        "text": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-10T19:08:30Z. Please include `8557:1C969D:11D6907:380B976:6AF36BAD` when reporting this issue.'}]"
+      }
+    ],
+    "structuredContent": {
+      "error": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-10T19:08:30Z. Please include `8557:1C969D:11D6907:380B976:6AF36BAD` when reporting this issue.'}]",
+      "error_code": "UNKNOWN"
+    },
+    "isError": true
+  },
+  "refRetry": {
+    "content": [
+      {
+        "type": "text",
+        "text": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-10T19:09:02Z. Please include `8561:1A00B1:82740F:194C784:6AF36BCD` when reporting this issue.'}]"
+      }
+    ],
+    "structuredContent": {
+      "error": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-10T19:09:02Z. Please include `8561:1A00B1:82740F:194C784:6AF36BCD` when reporting this issue.'}]",
+      "error_code": "UNKNOWN"
+    },
+    "isError": true
+  },
+  "shellDryRun": {
+    "exit": 128,
+    "error": "could not read Username for https://github.com: No such device or address"
+  },
+  "candidateCI": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "{\"total_count\":0,\"workflow_runs\":[]}",
+      "title": "runs",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/LLM-Dev-Ops/schema-registry/actions/runs?head_sha=87f3211058dc0d5b58abd83985ee3a5aab0fefcf&per_page=100",
+      "display_url": "https://api.github.com/repos/LLM-Dev-Ops/schema-registry/actions/runs?head_sha=87f3211058dc0d5b58abd83985ee3a5aab0fefcf&per_page=100",
+      "display_title": "runs",
+      "structuredContent": {
+        "title": "runs",
+        "content": "{\"total_count\":0,\"workflow_runs\":[]}",
+        "display_url": "https://api.github.com/repos/LLM-Dev-Ops/schema-registry/actions/runs?head_sha=87f3211058dc0d5b58abd83985ee3a5aab0fefcf&per_page=100"
+      }
+    },
+    "isError": false
+  },
+  "main": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "{\"name\":\"main\",\"commit\":{\"sha\":\"d0d89f267c32a2d31b622ad112836435c2534f39\",\"node_id\":\"C_kwDOQakRG9oAKGQwZDg5ZjI2N2MzMmEyZDMxYjYyMmFkMTEyODM2NDM1YzI1MzRmMzk\",\"commit\":{\"author\":{\"name\":\"Nick Ruest\",\"email\":\"127058086+nicholas-ruest@users.noreply.github.com\",\"date\":\"2026-07-27T20:26:36Z\"},\"committer\":{\"name\":\"GitHub\",\"email\":\"noreply@github.com\",\"date\":\"2026-07-27T20:26:36Z\"},\"message\":\"Merge pull request #2 from LLM-Dev-Ops/adr/0001-reconcile-readme-status-claims\\n\\nADR-0001: Reconcile README status claims\",\"tree\":{\"sha\":\"bf03547d9ee24cc46ae1e8e10268e1b9d661325a\",\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/git/trees/bf03547d9ee24cc46ae1e8e10268e1b9d661325a\"},\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/git/commits/d0d89f267c32a2d31b622ad112836435c2534f39\",\"comment_count\":0,\"verification\":{\"verified\":true,\"reason\":\"valid\",\"signature\":\"-----BEGIN PGP SIGNATURE-----\\n\\nwsFcBAABCAAQBQJqZ778CRC1aQ7uu5UhlAAAz3EQADRYg0boP8YGHn4mQuxnRHY5\\n9FkxPkXjLCanxm8IJBodANcHdA5PHETcMqIX52oKm/46v6h4Dc2xR/FrXE89x4BE\\nnmdtapT44H56jJjKfm0y+KvWB6+jJpda9VSKk7/Xv9hT3ltrMrlnHsr9WSXIdDqf\\nC/u6PSocJysAjGzu9L3wfuyfA7T5O9wYHNpKQe3NiQb0UxMljvmo9EOSwb413xtj\\nM3/+/rmCR5lDA77JrBRcTYXTV4CFncSdAUvH00YJD+UH8F6JiQ5RdiYcqH12wgnA\\nRjt/ca8obDTCeX9a2MBVYMLUldq1/GF+C0xCUj3Bsrk0CpdtmwK7NjvUPT1dJJ0R\\nBGAhoGyJi6P3DcSqChJDnAEaFEV1Eo5hGfW/qCczINt4jlqCWs9yVxt969asv4wx\\nuB+m8eH1W3f8rtx7TOueMlgDYE4kHTkCGKCn9mKkVYN0fCrklamho6zziEcr9J2z\\n1wMs5VJCKxpG/mZt3koQafEGn76F6bDXpHbStc8yzcrZDwahyxEzcFYOyIxCimp4\\nV6XV4j9n9Pz9GYcRRFZ48Z5RmpAuN073NcyPtkDPdHu4BzniKilFFOE4g9IKjNOf\\nzEpqZ0mEDNIZpDv9EQlb//ura16uUuRdBtKNJEqakAld4GaC2dtau3dCWKoa5ZNa\\nxtSHCI/VTtA1onAOuhT0\\n=nKyy\\n-----END PGP SIGNATURE-----\\n\",\"payload\":\"tree bf03547d9ee24cc46ae1e8e10268e1b9d661325a\\nparent 0790780d1b8f0b2cff694b75a84b144b96847c94\\nparent 1287352b512d55ad7922136adf07968880b689f7\\nauthor Nick Ruest <127058086+nicholas-ruest@users.noreply.github.com> 1785183996 -0400\\ncommitter GitHub <noreply@github.com> 1785183996 -0400\\n\\nMerge pull request #2 from LLM-Dev-Ops/adr/0001-reconcile-readme-status-claims\\n\\nADR-0001: Reconcile README status claims\",\"verified_at\":\"2026-07-27T20:26:37Z\"}},\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/commits/d0d89f267c32a2d31b622ad112836435c2534f39\",\"html_url\":\"https://github.com/LLM-Dev-Ops/schema-registry/commit/d0d89f267c32a2d31b622ad112836435c2534f39\",\"comments_url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/commits/d0d89f267c32a2d31b622ad112836435c2534f39/comments\",\"author\":{\"login\":\"nicholas-ruest\",\"id\":127058086,\"node_id\":\"U_kgDOB5LApg\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/127058086?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/nicholas-ruest\",\"html_url\":\"https://github.com/nicholas-ruest\",\"followers_url\":\"https://api.github.com/users/nicholas-ruest/followers\",\"following_url\":\"https://api.github.com/users/nicholas-ruest/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/nicholas-ruest/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/nicholas-ruest/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/nicholas-ruest/subscriptions\",\"organizations_url\":\"https://api.github.com/users/nicholas-ruest/orgs\",\"repos_url\":\"https://api.github.com/users/nicholas-ruest/repos\",\"events_url\":\"https://api.github.com/users/nicholas-ruest/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/nicholas-ruest/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"committer\":{\"login\":\"web-flow\",\"id\":19864447,\"node_id\":\"MDQ6VXNlcjE5ODY0NDQ3\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/19864447?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/web-flow\",\"html_url\":\"https://github.com/web-flow\",\"followers_url\":\"https://api.github.com/users/web-flow/followers\",\"following_url\":\"https://api.github.com/users/web-flow/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/web-flow/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/web-flow/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/web-flow/subscriptions\",\"organizations_url\":\"https://api.github.com/users/web-flow/orgs\",\"repos_url\":\"https://api.github.com/users/web-flow/repos\",\"events_url\":\"https://api.github.com/users/web-flow/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/web-flow/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"parents\":[{\"sha\":\"0790780d1b8f0b2cff694b75a84b144b96847c94\",\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/commits/0790780d1b8f0b2cff694b75a84b144b96847c94\",\"html_url\":\"https://github.com/LLM-Dev-Ops/schema-registry/commit/0790780d1b8f0b2cff694b75a84b144b96847c94\"},{\"sha\":\"1287352b512d55ad7922136adf07968880b689f7\",\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/commits/1287352b512d55ad7922136adf07968880b689f7\",\"html_url\":\"https://github.com/LLM-Dev-Ops/schema-registry/commit/1287352b512d55ad7922136adf07968880b689f7\"}]},\"_links\":{\"self\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/branches/main\",\"html\":\"https://github.com/LLM-Dev-Ops/schema-registry/tree/main\"},\"protected\":false,\"protection\":{\"enabled\":false,\"required_status_checks\":{\"enforcement_level\":\"off\",\"contexts\":[],\"checks\":[]}},\"protection_url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/branches/main/protection\"}",
+      "title": "main",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/LLM-Dev-Ops/schema-registry/branches/main",
+      "display_url": "https://api.github.com/repos/LLM-Dev-Ops/schema-registry/branches/main",
+      "display_title": "main",
+      "structuredContent": {
+        "title": "main",
+        "content": "{\"name\":\"main\",\"commit\":{\"sha\":\"d0d89f267c32a2d31b622ad112836435c2534f39\",\"node_id\":\"C_kwDOQakRG9oAKGQwZDg5ZjI2N2MzMmEyZDMxYjYyMmFkMTEyODM2NDM1YzI1MzRmMzk\",\"commit\":{\"author\":{\"name\":\"Nick Ruest\",\"email\":\"127058086+nicholas-ruest@users.noreply.github.com\",\"date\":\"2026-07-27T20:26:36Z\"},\"committer\":{\"name\":\"GitHub\",\"email\":\"noreply@github.com\",\"date\":\"2026-07-27T20:26:36Z\"},\"message\":\"Merge pull request #2 from LLM-Dev-Ops/adr/0001-reconcile-readme-status-claims\\n\\nADR-0001: Reconcile README status claims\",\"tree\":{\"sha\":\"bf03547d9ee24cc46ae1e8e10268e1b9d661325a\",\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/git/trees/bf03547d9ee24cc46ae1e8e10268e1b9d661325a\"},\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/git/commits/d0d89f267c32a2d31b622ad112836435c2534f39\",\"comment_count\":0,\"verification\":{\"verified\":true,\"reason\":\"valid\",\"signature\":\"-----BEGIN PGP SIGNATURE-----\\n\\nwsFcBAABCAAQBQJqZ778CRC1aQ7uu5UhlAAAz3EQADRYg0boP8YGHn4mQuxnRHY5\\n9FkxPkXjLCanxm8IJBodANcHdA5PHETcMqIX52oKm/46v6h4Dc2xR/FrXE89x4BE\\nnmdtapT44H56jJjKfm0y+KvWB6+jJpda9VSKk7/Xv9hT3ltrMrlnHsr9WSXIdDqf\\nC/u6PSocJysAjGzu9L3wfuyfA7T5O9wYHNpKQe3NiQb0UxMljvmo9EOSwb413xtj\\nM3/+/rmCR5lDA77JrBRcTYXTV4CFncSdAUvH00YJD+UH8F6JiQ5RdiYcqH12wgnA\\nRjt/ca8obDTCeX9a2MBVYMLUldq1/GF+C0xCUj3Bsrk0CpdtmwK7NjvUPT1dJJ0R\\nBGAhoGyJi6P3DcSqChJDnAEaFEV1Eo5hGfW/qCczINt4jlqCWs9yVxt969asv4wx\\nuB+m8eH1W3f8rtx7TOueMlgDYE4kHTkCGKCn9mKkVYN0fCrklamho6zziEcr9J2z\\n1wMs5VJCKxpG/mZt3koQafEGn76F6bDXpHbStc8yzcrZDwahyxEzcFYOyIxCimp4\\nV6XV4j9n9Pz9GYcRRFZ48Z5RmpAuN073NcyPtkDPdHu4BzniKilFFOE4g9IKjNOf\\nzEpqZ0mEDNIZpDv9EQlb//ura16uUuRdBtKNJEqakAld4GaC2dtau3dCWKoa5ZNa\\nxtSHCI/VTtA1onAOuhT0\\n=nKyy\\n-----END PGP SIGNATURE-----\\n\",\"payload\":\"tree bf03547d9ee24cc46ae1e8e10268e1b9d661325a\\nparent 0790780d1b8f0b2cff694b75a84b144b96847c94\\nparent 1287352b512d55ad7922136adf07968880b689f7\\nauthor Nick Ruest <127058086+nicholas-ruest@users.noreply.github.com> 1785183996 -0400\\ncommitter GitHub <noreply@github.com> 1785183996 -0400\\n\\nMerge pull request #2 from LLM-Dev-Ops/adr/0001-reconcile-readme-status-claims\\n\\nADR-0001: Reconcile README status claims\",\"verified_at\":\"2026-07-27T20:26:37Z\"}},\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/commits/d0d89f267c32a2d31b622ad112836435c2534f39\",\"html_url\":\"https://github.com/LLM-Dev-Ops/schema-registry/commit/d0d89f267c32a2d31b622ad112836435c2534f39\",\"comments_url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/commits/d0d89f267c32a2d31b622ad112836435c2534f39/comments\",\"author\":{\"login\":\"nicholas-ruest\",\"id\":127058086,\"node_id\":\"U_kgDOB5LApg\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/127058086?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/nicholas-ruest\",\"html_url\":\"https://github.com/nicholas-ruest\",\"followers_url\":\"https://api.github.com/users/nicholas-ruest/followers\",\"following_url\":\"https://api.github.com/users/nicholas-ruest/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/nicholas-ruest/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/nicholas-ruest/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/nicholas-ruest/subscriptions\",\"organizations_url\":\"https://api.github.com/users/nicholas-ruest/orgs\",\"repos_url\":\"https://api.github.com/users/nicholas-ruest/repos\",\"events_url\":\"https://api.github.com/users/nicholas-ruest/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/nicholas-ruest/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"committer\":{\"login\":\"web-flow\",\"id\":19864447,\"node_id\":\"MDQ6VXNlcjE5ODY0NDQ3\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/19864447?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/web-flow\",\"html_url\":\"https://github.com/web-flow\",\"followers_url\":\"https://api.github.com/users/web-flow/followers\",\"following_url\":\"https://api.github.com/users/web-flow/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/web-flow/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/web-flow/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/web-flow/subscriptions\",\"organizations_url\":\"https://api.github.com/users/web-flow/orgs\",\"repos_url\":\"https://api.github.com/users/web-flow/repos\",\"events_url\":\"https://api.github.com/users/web-flow/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/web-flow/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"parents\":[{\"sha\":\"0790780d1b8f0b2cff694b75a84b144b96847c94\",\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/commits/0790780d1b8f0b2cff694b75a84b144b96847c94\",\"html_url\":\"https://github.com/LLM-Dev-Ops/schema-registry/commit/0790780d1b8f0b2cff694b75a84b144b96847c94\"},{\"sha\":\"1287352b512d55ad7922136adf07968880b689f7\",\"url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/commits/1287352b512d55ad7922136adf07968880b689f7\",\"html_url\":\"https://github.com/LLM-Dev-Ops/schema-registry/commit/1287352b512d55ad7922136adf07968880b689f7\"}]},\"_links\":{\"self\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/branches/main\",\"html\":\"https://github.com/LLM-Dev-Ops/schema-registry/tree/main\"},\"protected\":false,\"protection\":{\"enabled\":false,\"required_status_checks\":{\"enforcement_level\":\"off\",\"contexts\":[],\"checks\":[]}},\"protection_url\":\"https://api.github.com/repos/LLM-Dev-Ops/schema-registry/branches/main/protection\"}",
+        "display_url": "https://api.github.com/repos/LLM-Dev-Ops/schema-registry/branches/main"
+      }
+    },
+    "isError": false
+  },
+  "requestBoundary": [
+    {
+      "root": "/workspace/scratch/4f25900b71ff/schema10-comparator",
+      "exit": 0,
+      "holdout": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "anchors": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "root": "/workspace/scratch/4f25900b71ff/schema10-exact",
+      "exit": 0,
+      "holdout": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "anchors": [
+        true,
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "ruosStart": {
+    "content": [
+      {
+        "type": "text",
+        "text": "McpServerError: API returned 502 Bad Gateway: {\"error\":\"*ruos-af940f7f-509c-4227-9498-* has an unresolved launch cancellation; a new start was not sent.\"}"
+      }
+    ],
+    "structuredContent": {
+      "error": "McpServerError: API returned 502 Bad Gateway: {\"error\":\"*ruos-af940f7f-509c-4227-9498-* has an unresolved launch cancellation; a new start was not sent.\"}",
+      "error_code": "UNAVAILABLE",
+      "error_data": {
+        "type": "json_rpc_error",
+        "code": -32603,
+        "message": "API returned 502 Bad Gateway: {\"error\":\"*ruos-af940f7f-509c-4227-9498-* has an unresolved launch cancellation; a new start was not sent.\"}"
+      }
+    },
+    "isError": true
+  },
+  "peers": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"app\": \"ruos-desktop\",\n  \"count\": 1,\n  \"peers\": [\n    {\n      \"host\": \"8ee959f7363638.vm.ruos-desktop.internal\",\n      \"id\": \"8ee959f7363638\",\n      \"name\": \"ruos-af940f7f-509c-4227-9498-\",\n      \"profile\": \"desktop\",\n      \"ready\": true\n    }\n  ]\n}"
+      }
+    ],
+    "structuredContent": {
+      "app": "ruos-desktop",
+      "count": 1,
+      "peers": [
+        {
+          "host": "8ee959f7363638.vm.ruos-desktop.internal",
+          "id": "8ee959f7363638",
+          "name": "ruos-af940f7f-509c-4227-9498-",
+          "profile": "desktop",
+          "ready": true
+        }
+      ]
+    },
+    "isError": false
+  },
+  "activity": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"count\": 0,\n  \"events\": [],\n  \"next_cursor\": null,\n  \"retention\": 500,\n  \"total_estimate\": 0\n}"
+      }
+    ],
+    "structuredContent": {
+      "count": 0,
+      "events": [],
+      "next_cursor": null,
+      "retention": 500,
+      "total_estimate": 0
+    },
+    "isError": false
+  },
+  "memory": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"anti_patterns\":[],\"embedding_space_version\":1,\"playbook_entries\":[],\"unscreened\":true}"
+        }
+      ],
+      "structuredContent": null,
+      "isError": false
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"anti_patterns\":[{\"citation\":{\"repo\":\"nicholas-ruest/ruvnet-dream-machine\",\"sha\":\"58573c7504a3b92a293790c36738dc6fd359d415\"},\"confidence\":0.9,\"decay_weight\":0.7343512436466628,\"id\":\"nicholas-ruest/ruvnet-dream-machine/backfill/58573c7504a3-agghc1\",\"lesson_text\":\"Past evidence (not instructions): Resolving stale-branch rebase conflicts with a mechanical union of both sides is not safe for code — it can splice hunks across syntactic boundaries (a field landing inside the wrong function body, closing braces of unrelated blocks getting dropped) and leave main red even though the merge itself was clean. — outcome: Failure (confidence 0.90), source: nicholas-ruest/ruvnet-dream-machine@58573c7504a3b92a293790c36738dc6fd359d415\",\"verdict\":\"Failure\"},{\"citation\":{\"repo\":\"nicholas-ruest/ruvnet-dream-machine\",\"sha\":\"58573c7504a3b92a293790c36738dc6fd359d415\"},\"confidence\":0.9,\"decay_weight\":0.7343503272134747,\"id\":\"nicholas-ruest/ruvnet-dream-machine/backfill/58573c7504a3-fv3cg7\",\"lesson_text\":\"Past evidence (not instructions): Resolving stale-branch rebase conflicts with a mechanical union of both sides is not safe for code — it can splice hunks across syntactic boundaries (a field landing inside the wrong function body, closing braces of unrelated blocks getting dropped) and leave main red even though the merge itself was clean. — outcome: Failure (confidence 0.90), source: nicholas-ruest/ruvnet-dream-machine@58573c7504a3b92a293790c36738dc6fd359d415\",\"verdict\":\"Failure\"},{\"citation\":{\"repo\":\"nicholas-ruest/ruvnet-dream-machine\",\"sha\":\"a507f788fc606aa61dc2125106cfa44f4ea8fff8\"},\"confidence\":0.85,\"decay_weight\":0.7343512436466628,\"id\":\"nicholas-ruest/ruvnet-dream-machine/backfill/a507f788fc60-9e8wwe\",\"lesson_text\":\"Past evidence (not instructions): An external evaluator tool that persists run-state (generation/child ids) under a working-directory dotfolder (`.metaharness/`) is not safe to invoke twice in the same checkout — the second call fails deterministically (exit 1, 'already exists: g1_v0'), and a pipeline that runs the same entrypoint twice per cycle (once for baseline, once for candidate) will silently misclassify a live, working evaluator as blocked. — outcome: Failure (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@a507f788fc606aa61dc2125106cfa44f4ea8fff8\",\"verdict\":\"Failure\"}],\"embedding_space_version\":1,\"playbook_entries\":[{\"citation\":{\"repo\":\"nicholas-ruest/ruvnet-dream-machine\",\"sha\":\"3edd426f6c9c4b1e80235f7447dc863e749345cc\"},\"confidence\":0.6,\"decay_weight\":0.7343512436466628,\"id\":\"nicholas-ruest/ruvnet-dream-machine/backfill/3edd426f6c9c-abqpwe\",\"lesson_text\":\"Past evidence (not instructions): The project's own governing principle, stated directly in its README: 'Evaluation is not promotion — the machine never merges; a human does.' Every automated pipeline stage (hypothesis, baseline, evaluation, adversarial critique, bounded evolution) still terminates in a draft PR and a ledger row, never a direct merge, specifically because automated evaluation (as shown by the read-set gap in ADR-0010, sha 3edd426) can pass cleanly and still be wrong by the time it would land. — outcome: DesignProblem (confidence 0.60), source: nicholas-ruest/ruvnet-dream-machine@3edd426f6c9c4b1e80235f7447dc863e749345cc\",\"verdict\":\"DesignProblem\"},{\"citation\":{\"repo\":\"nicholas-ruest/ruvnet-dream-machine\",\"sha\":\"04576aafcabac8575d5f288324ef8e49a6dca4dc\"},\"confidence\":0.85,\"decay_weight\":0.7343512436466628,\"id\":\"nicholas-ruest/ruvnet-dream-machine/backfill/04576aafcaba-ww91y2\",\"lesson_text\":\"Past evidence (not instructions): Before shipping a bug-fix PR, check whether the same bug already has open, duplicate fix PRs in flight. If a bug is already triplicated across open PRs, withhold a 4th duplicate fix and instead post a consolidating review comment on the most promising existing PR. — outcome: ExplicitLesson (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@04576aafcabac8575d5f288324ef8e49a6dca4dc\",\"verdict\":\"ExplicitLesson\"},{\"citation\":{\"repo\":\"nicholas-ruest/ruvnet-dream-machine\",\"sha\":\"04576aafcabac8575d5f288324ef8e49a6dca4dc\"},\"confidence\":0.85,\"decay_weight\":0.7343503272134747,\"id\":\"nicholas-ruest/ruvnet-dream-machine/backfill/04576aafcaba-xusknq\",\"lesson_text\":\"Past evidence (not instructions): Before shipping a bug-fix PR, check whether the same bug already has open, duplicate fix PRs in flight. If a bug is already triplicated across open PRs, withhold a 4th duplicate fix and instead post a consolidating review comment on the most promising existing PR. — outcome: ExplicitLesson (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@04576aafcabac8575d5f288324ef8e49a6dca4dc\",\"verdict\":\"ExplicitLesson\"},{\"citation\":{\"repo\":\"nicholas-ruest/ruvnet-dream-machine\",\"sha\":\"d38e09328962e135c07831ab0af909287a2ef826\"},\"confidence\":0.7,\"decay_weight\":0.7343512436466628,\"id\":\"nicholas-ruest/ruvnet-dream-machine/backfill/d38e09328962-ek1ws5\",\"lesson_text\":\"Past evidence (not instructions): For a self-modifying/self-evolving system (bounded Darwin evolution over the harness itself), gate promotion of a new candidate on held-out traces the candidate was not optimized against, not just the traces used to select it — otherwise the optimizer can overfit to the evaluation set it already saw. — outcome: Success (confidence 0.70), source: nicholas-ruest/ruvnet-dream-machine@d38e09328962e135c07831ab0af909287a2ef826\",\"verdict\":\"Success\"},{\"citation\":{\"repo\":\"nicholas-ruest/ruvnet-dream-machine\",\"sha\":\"d38e09328962e135c07831ab0af909287a2ef826\"},\"confidence\":0.7,\"decay_weight\":0.7343503272134747,\"id\":\"nicholas-ruest/ruvnet-dream-machine/backfill/d38e09328962-ag7e0l\",\"lesson_text\":\"Past evidence (not instructions): For a self-modifying/self-evolving system (bounded Darwin evolution over the harness itself), gate promotion of a new candidate on held-out traces the candidate was not optimized against, not just the traces used to select it — otherwise the optimizer can overfit to the evaluation set it already saw. — outcome: Success (confidence 0.70), source: nicholas-ruest/ruvnet-dream-machine@d38e09328962e135c07831ab0af909287a2ef826\",\"verdict\":\"Success\"}],\"unscreened\":true}"
+        }
+      ],
+      "structuredContent": null,
+      "isError": false
+    }
+  ],
+  "outcome": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"accepted\":true,\"evidence_id\":\"LLM-Dev-Ops/schema-registry/commit/87f3211058dc0d5b58abd83985ee3a5aab0fefcf\"}"
+      }
+    ],
+    "structuredContent": null,
+    "isError": false
+  },
+  "offline": {
+    "flagsConfirmed": false,
+    "exit": 2,
+    "error": "Python launcher ENOENT",
+    "command": "RUFLO_MODEL_DIR=/home/ruv/.cache/llm-dev-ops-models python3 /home/ruv/work/research-lab-runtime-recovery-20261016/scripts/offline-exec.py node --import /home/ruv/work/research-lab-runtime-recovery-20261016/scripts/ruflo-local-model.mjs /home/ruv/.local/share/llm-dev-ops-tools/node_modules/ruflo/bin/ruflo.js hooks post-task --task-id schema-nov10pm --success false --quality 0.7 --agent codex --task 'Compatible dependency remediation attempted; full promotion blocked; no merge' --store-results --format json"
+  },
+  "ruflo": {
+    "attempt": "node /home/ruv/.local/share/llm-dev-ops-tools/node_modules/ruflo/bin/ruflo.js --version",
+    "exit": 1,
+    "error": "MODULE_NOT_FOUND"
+  },
+  "rust": {
+    "attempt": "cargo test --locked --workspace",
+    "exit": 127,
+    "error": "cargo not found"
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "trials": [
+    {
+      "i": 0,
+      "revision": "d371942de7daedfdde8f9b4f2ac26c7dde99ddd7",
+      "counts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 11,
+        "high": 27,
+        "critical": 2,
+        "total": 40
+      },
+      "tests": 0,
+      "assertions": 41,
+      "parser": {
+        "holdout": [
+          true,
+          true,
+          true
+        ],
+        "anchors": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "statuses": [
+          413,
+          415,
+          415
+        ]
+      }
+    },
+    {
+      "i": 0,
+      "revision": "87f3211058dc0d5b58abd83985ee3a5aab0fefcf",
+      "counts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 5,
+        "high": 10,
+        "critical": 0,
+        "total": 15
+      },
+      "tests": 0,
+      "assertions": 41,
+      "parser": {
+        "holdout": [
+          true,
+          true,
+          true
+        ],
+        "anchors": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "statuses": [
+          413,
+          415,
+          415
+        ]
+      }
+    },
+    {
+      "i": 1,
+      "revision": "87f3211058dc0d5b58abd83985ee3a5aab0fefcf",
+      "counts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 5,
+        "high": 10,
+        "critical": 0,
+        "total": 15
+      },
+      "tests": 0,
+      "assertions": 41,
+      "parser": {
+        "holdout": [
+          true,
+          true,
+          true
+        ],
+        "anchors": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "statuses": [
+          413,
+          415,
+          415
+        ]
+      }
+    },
+    {
+      "i": 1,
+      "revision": "d371942de7daedfdde8f9b4f2ac26c7dde99ddd7",
+      "counts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 11,
+        "high": 27,
+        "critical": 2,
+        "total": 40
+      },
+      "tests": 0,
+      "assertions": 41,
+      "parser": {
+        "holdout": [
+          true,
+          true,
+          true
+        ],
+        "anchors": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "statuses": [
+          413,
+          415,
+          415
+        ]
+      }
+    },
+    {
+      "i": 2,
+      "revision": "d371942de7daedfdde8f9b4f2ac26c7dde99ddd7",
+      "counts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 11,
+        "high": 27,
+        "critical": 2,
+        "total": 40
+      },
+      "tests": 0,
+      "assertions": 41,
+      "parser": {
+        "holdout": [
+          true,
+          true,
+          true
+        ],
+        "anchors": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "statuses": [
+          413,
+          415,
+          415
+        ]
+      }
+    },
+    {
+      "i": 2,
+      "revision": "87f3211058dc0d5b58abd83985ee3a5aab0fefcf",
+      "counts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 5,
+        "high": 10,
+        "critical": 0,
+        "total": 15
+      },
+      "tests": 0,
+      "assertions": 41,
+      "parser": {
+        "holdout": [
+          true,
+          true,
+          true
+        ],
+        "anchors": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "statuses": [
+          413,
+          415,
+          415
+        ]
+      }
+    }
+  ],
+  "replay": {
+    "pass": true,
+    "checks": {
+      "receipts": true,
+      "reachesRoot": true,
+      "contiguousParents": true,
+      "allPromoted": true,
+      "gateUnchanged": true,
+      "gateReExecutes": true,
+      "allCommitsReceipts": true,
+      "sealedFieldsAuthentic": true
+    },
+    "failures": [],
+    "chainSummary": "gen0(root)"
+  },
+  "promotions": 0,
+  "gate": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+  "verdicts": [
+    {
+      "verdict": "REJECTED",
+      "reasons": [
+        "safety_regressed"
+      ]
+    }
+  ],
+  "inverse": [
+    {
+      "path": "package-lock.json",
+      "sha256": "727c15d1333b5e4c8bcf30078b341129309490b8d37e397e098a2bc02cbe6d35",
+      "bytes": 213586
+    },
+    {
+      "path": ".github/workflows/parser-boundary.yml",
+      "sha256": "00483955dfa9fd24d70e1c2cdcc5fdaa3f98f1aa63c96d8fa35ab6c1f9881be7",
+      "bytes": 735
+    }
+  ],
+  "rawSha256": "e91c79e53e22e36d35e2e4b2d7a129e0cd9ac6fa1bc25f2b53f34074e8785562",
+  "rawBytes": 948720
+}
